@@ -1,0 +1,44 @@
+html {
+  font-size: 62.5%;
+}
+
+body {
+  font-family: monospace;
+  margin-top: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 10vh;
+}
+
+header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 8rem;
+  gap: 2rem;
+}
+
+header h1 {
+  font-size: 4.8rem;
+}
+
+header h2 {
+  font-size: 2.4rem;
+}
+
+article {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.2rem;
+}
+
+article label {
+  margin: 1.6rem 0;
+}
+
+article input {
+  font-size: 2.4rem;
+}
