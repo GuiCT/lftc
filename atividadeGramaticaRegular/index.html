@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Regex</title>
+  <link rel="stylesheet" href="reset.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="tree.css">
+</head>
+
+<body>
+  <header>
+    <h1>Simulador de Gramáticas Regulares </h1>
+    <h2>Guilherme Tomiasi & Willian Murayama</h2>
+    <h3>Apenas gramáticas lineares à direita suportadas</h3>
+  </header>
+  <article>
+    <section class="row">
+      <div>
+        <h1>Entrada:</h1>
+        <input id="user-input" type="text" placeholder="λ" />
+      </div>
+      <button onclick="validateInput()">Validar</button>
+    </section>
+    <section id="rules">
+      <div class="row">
+        <h1>Regras:</h1>
+        <button id="add-rule">Adicionar regra</button>
+      </div>
+      <ul id="list">
+        <li class="rule">
+          <input type="text" value="S" readonly />
+          <span>-></span>
+          <input type="text" placeholder="λ" oninput="validateAllRules()" />
+          <button disabled>Remover regra</button>
+        </li>
+      </ul>
+      <div id="result-tree"></div>
+    </section>
+  </article>
+
+  <script src="tiny.js"></script>
+  <script src="grammar.js"></script>
+</body>
+
+</html>
