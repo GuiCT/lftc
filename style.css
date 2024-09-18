@@ -1,0 +1,40 @@
+html,
+body {
+  /* height: 100%; */
+  margin: 0;
+}
+
+.container {
+  display: flex;
+  flex-direction: column; /* Stack the divs vertically */
+  justify-content: center; /* Align vertically */
+  align-items: center; /* Align horizontally */
+  /* height: 100vh;  */
+  margin-top: 100px;
+}
+
+.centered-div {
+  margin: 10px 0; /* Add space between the links */
+}
+
+a {
+  text-decoration: none;
+  font-size: 20px;
+  color: #333; /* Customize link color */
+}
+
+a:hover {
+  color: #007bff; /* Customize hover effect */
+}
+
+h1 {
+  text-align: center;
+}
+
+h2 {
+  text-align: center;
+}
+
+body {
+  font-family: monospace;
+}
