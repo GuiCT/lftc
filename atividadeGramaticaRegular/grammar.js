@@ -100,12 +100,15 @@ function validateInput() {
   for (const rule of rules) {
     const children = rule.getElementsByTagName('input');
     const lv = children[0].value;
-    let rv = children[1].value.split("").join(" ");
-    const indexLv = usedLeftSide.indexOf(lv);
-
-    if (rv === "") {
-      rv = "λ";
+    const rvRawValue = children[1].value;
+    let rv = rvRawValue.split("").join(" ");
+    // Se o valor da direita não encerrar em uma produção (maiuscúlo), adicionar λ ao fim
+    // O trim é feito para caso a produção seja vazia
+    if (!rvRawValue.match(/[A-Z]$/)) {
+      rv += " λ";
+      rv = rv.trim();
     }
+    const indexLv = usedLeftSide.indexOf(lv);
 
     if (indexLv === -1) {
       usedLeftSide.push(lv);
