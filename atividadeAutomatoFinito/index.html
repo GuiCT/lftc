@@ -2,10 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
     <title>Automato Finito</title>
   </head>
   <body>
@@ -13,6 +11,16 @@
       <h1>Simulador de Automato Finito</h1>
       <h2>Guilherme Tomiasi & Willian Murayama</h2>
     </header>
+    <div>
+      <button onclick="addNewNode()">Add New Node</button>
+
+      <div
+        id="myDiagramDiv"
+        style="width: 400px; height: 600px; background-color: #dae4e4"
+      ></div>
+    </div>
     <a href="../index.html">Voltar ao início</a>
+    <script src="https://cdn.jsdelivr.net/npm/gojs/release/go.js"></script>
+    <script src="script.js"></script>
   </body>
 </html>
