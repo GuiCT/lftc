@@ -18,6 +18,7 @@ function renderListComponent() {
   rule.oninput = () => validateAllRules();
   const removeButton = document.createElement("button");
   removeButton.innerText = "Remover regra";
+  removeButton.style.backgroundColor="#FF7F7F";
   removeButton.onclick = () => li.remove();
   li.appendChild(productionInput);
   li.appendChild(arrow);
