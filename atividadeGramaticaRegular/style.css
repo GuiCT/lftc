@@ -1,3 +1,14 @@
+.container {
+  display: flex;
+}
+
+button {
+  height:30px;
+  width:150px;
+  text-align: center;
+  border-radious
+}
+
 html {
   font-size: 62.5%;
 }
