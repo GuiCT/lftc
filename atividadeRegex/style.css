@@ -54,3 +54,9 @@ h2 {
 body {
   font-family: monospace;
 }
+
+.button {
+  width: 150px;
+  height: 40px;
+  border-radius: 10px;
+}

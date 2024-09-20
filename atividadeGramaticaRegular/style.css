@@ -1,9 +1,16 @@
+.inter-<uniquifier> {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: <weight>;
+  font-style: normal;
+}
+
 html {
   font-size: 62.5%;
 }
 
 body {
-  font-family: monospace;
+  font-family: inter-regular;
   margin-top: 1.6rem;
   display: flex;
   flex-direction: column;
@@ -48,6 +55,8 @@ article input {
   font-size: 2.4rem;
 }
 
+
+
 .row {
   display: flex;
   flex-direction: row;
@@ -82,4 +91,11 @@ ul#list {
   display: flex;
   flex-direction: row;
   gap: 2rem;
+}
+
+.button {
+  width: 150px;
+  height: 40px;
+  border-radius: 10px;
+
 }
