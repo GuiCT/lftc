@@ -10,8 +10,22 @@ function renderListComponent() {
   productionInput.setAttribute("type", "text");
   productionInput.setAttribute("placeholder", "S");
   productionInput.setAttribute("maxlength", "1");
-  const arrow = document.createElement("span");
-  arrow.innerText = "->";
+  // const arrow = document.createElement("span");
+  // arrow.innerText = "->";
+  const arrow = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  arrow.setAttribute("width", "30px");
+  arrow.setAttribute("height", "30px");
+  arrow.setAttribute("viewBox", "0 0 16 16");
+  arrow.setAttribute("fill", "none");
+  arrow.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+
+  // Create the path element inside the SVG
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path.setAttribute("d", "M8 6L8 2L10 2L16 8L10 14L8 14L8 10L0 10L0 6L8 6Z");
+  path.setAttribute("fill", "#000000");
+
+  // Append the path to the arrow (svg) element
+  arrow.appendChild(path);
   const rule = document.createElement("input");
   rule.setAttribute("type", "text");
   rule.setAttribute("placeholder", "λ");

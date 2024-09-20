@@ -24,6 +24,7 @@ function validateRegExpInput() {
   try {
     regexObject = new RegExp(inputRegex.value);
     inputRegex.style.color = "green";
+    // inputRegex.style.backgroundColor = "#90EE90"
     regexIsValid = true;
   } catch(e) {
     inputRegex.style.color = "red";
@@ -35,8 +36,10 @@ function validateTestInput() {
   if (regexIsValid) {
     if (regexObject.test(inputTest.value)) {
       inputTest.style.color = "green";
+      inputTest.style.backgroundColor = "#90EE90"
     } else {
       inputTest.style.color = "red";
+      inputTest.style.backgroundColor = "#FF7F7F"
     }
   }
 }
