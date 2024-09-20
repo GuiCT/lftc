@@ -1,44 +1,22 @@
 const list = document.getElementById("list");
-const resultTree = document.getElementById('result-tree');
+const resultTree = document.getElementById('result');
 const rulePattern = new RegExp("^[a-z]*[A-Z]?$");
 const addRuleButton = document.getElementById("add-rule");
 
+// Instanciando modelo para linha da regra
+const ruleModel = document.getElementsByClassName("rule")[0].cloneNode(true);
+ruleModel.children[0].removeAttribute("readonly");
+ruleModel.children[0].value = "";
+ruleModel.children[2].value = "";
+ruleModel.children[3].removeAttribute("disabled");
+
 function renderListComponent() {
-  const li = document.createElement("li");
-  li.classList.add("rule");
-  const productionInput = document.createElement("input");
-  productionInput.setAttribute("type", "text");
-  productionInput.setAttribute("placeholder", "S");
-  productionInput.setAttribute("maxlength", "1");
-  // const arrow = document.createElement("span");
-  // arrow.innerText = "->";
-  const arrow = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  arrow.setAttribute("width", "30px");
-  arrow.setAttribute("height", "30px");
-  arrow.setAttribute("viewBox", "0 0 16 16");
-  arrow.setAttribute("fill", "none");
-  arrow.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-
-  // Create the path element inside the SVG
-  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-  path.setAttribute("d", "M8 6L8 2L10 2L16 8L10 14L8 14L8 10L0 10L0 6L8 6Z");
-  path.setAttribute("fill", "#000000");
-
-  // Append the path to the arrow (svg) element
-  arrow.appendChild(path);
-  const rule = document.createElement("input");
-  rule.setAttribute("type", "text");
-  rule.setAttribute("placeholder", "λ");
-  rule.oninput = () => validateAllRules();
-  const removeButton = document.createElement("button");
-  removeButton.innerText = "Remover regra";
-  removeButton.style.backgroundColor="#FF7F7F";
-  removeButton.onclick = () => li.remove();
-  li.appendChild(productionInput);
-  li.appendChild(arrow);
-  li.appendChild(rule);
-  li.appendChild(removeButton);
-  return li;
+  const newRule = ruleModel.cloneNode(true);
+  newRule.children[3].addEventListener("click", (e) => {
+    e.preventDefault();
+    newRule.remove();
+  });
+  return newRule;
 }
 
 function validateRule(element) {
@@ -78,21 +56,28 @@ function validateAllRules() {
   return !hasInvalidRule;
 };
 
-function displayTree(tree) {
-  if (!tree.subtrees || tree.subtrees.length == 0)
-    return '<li><a href="#" class=\'green-bg\'>' + tree.root + '</a></li>';
+function composeTreeElement(tree) {
+  const hasSubtrees = tree.subtrees && tree.subtrees.length > 0;
+  const treeElement = document.createElement('li');
+  const anchor = document.createElement('a');
+  anchor.href = '#';
+  anchor.innerText = tree.root;
+  treeElement.appendChild(anchor);
 
-  const builder = [];
-  builder.push('<li><a href="#">');
-  builder.push(tree.root);
-  builder.push('</a>');
-  builder.push('<ul>');
-  for (const subtree in tree.subtrees)
-    builder.push(displayTree(tree.subtrees[subtree]));
-  builder.push('</ul>');
-  builder.push('</li>');
-  return builder.join('');
-};
+  // Quando não há mais nenhuma sub-árvore, chegamos em uma folha
+  if (!hasSubtrees) {
+    return treeElement;
+  }
+
+  const ul = document.createElement('ul');
+  for (const subtree in tree.subtrees) {
+    const subtreeElement = composeTreeElement(tree.subtrees[subtree]);
+    ul.appendChild(subtreeElement);
+  }
+
+  treeElement.appendChild(ul);
+  return treeElement;
+}
 
 function getUserInput() {
   /**
@@ -146,19 +131,28 @@ function validateInput() {
   );
 
   const state = chart.getFinishedRoot(rootProduction);
-  resultTree.innerHTML = '';
+  // remove all children
+  while (resultTree.firstChild) {
+    resultTree.removeChild(resultTree.firstChild);
+  }
+
   if (state) {
     const trees = state.traverse()['0'].subtrees;
     for (const tree in trees) {
-      resultTree.innerHTML +=
-        '<div class="tree" id="displayTree"><ul>' +
-        displayTree(trees[tree]) +
-        '</ul></div></br>';
+      const newDiv = document.createElement('div');
+      newDiv.classList.add('tree');
+      newDiv.id = 'displayTree';
+      const treeList = document.createElement('ul');
+      const treeElement = composeTreeElement(trees[tree]);
+      treeList.appendChild(treeElement);
+      newDiv.appendChild(treeList);
+      resultTree.appendChild(newDiv);
     }
     return true;
   }
 
   resultTree.innerText = 'Entrada inválida'
+  return false;
 };
 
 addRuleButton.addEventListener("click", (e) => {
