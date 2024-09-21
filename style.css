@@ -1,16 +1,21 @@
 html,
 body {
-  /* height: 100%; */
   margin: 0;
 }
 
 .container {
   display: flex;
-  flex-direction: column; /* Stack the divs vertically */
-  justify-content: center; /* Align vertically */
-  align-items: center; /* Align horizontally */
-  /* height: 100vh;  */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   margin-top: 100px;
+}
+
+button {
+  width: 180px;
+  height: 60px;
+  border-radius: 30px;
+  font-size: 14pt;
 }
 
 .centered-div {

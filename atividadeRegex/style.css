@@ -58,5 +58,6 @@ body {
 .button {
   width: 150px;
   height: 40px;
-  border-radius: 10px;
+  border-radius: 30px;
+  font-size: 14pt;
 }
