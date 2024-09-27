@@ -11,19 +11,35 @@
 
 <body>
   <header>
-    <h1>Verificador de expressões regulares</h1>
-    <h2>Guilherme Tomiasi & Willian Murayama</h2>
+    <span class="title">Linguagens Formais e Teoria da Computação</span>
+    <span class="name">Guilherme Tomiasi & Willian Murayama</span>
   </header>
-  <article>
-
-      <label for="input_regex">Expressão regular</label>
-      <input id="input_regex"></input>
-
+  
+  <div class="container">
+    <div class="content">
+      <div style="display: flex; flex-direction: column;"> 
+        <label for="input_regex">Expressão regular</label>
+        <input id="input_regex"></input>
+      </div>
+    <div style="display: flex; flex-direction: column;">
       <label for="input_test">Texto verificado</label>
       <input id="input_test"></input>
+    </div>
+    </div>
+    <div class="content">
+        <span style="font-weight: bold; font-size: 16pt;">Conversão</span>
+        <button onclick="window.location.href='../index.html'" class="button" >Gramatica regular</button>
+        <button onclick="window.location.href='../index.html'" class="button"
+        >Automato finito</button>
+        <button onclick="window.location.href='../index.html'" class="button" >Voltar ao
+        início</button>
+    </div>
+  </div>
+  <article>
 
-    <!-- <a href="../index.html">Voltar ao início</a> -->
-    <button onclick="window.location.href='../index.html'" class="button" style="margin-top: 10px;">Voltar ao início</button>
+
+
+
     <script src="script.js"></script>
   </article>
 </body>

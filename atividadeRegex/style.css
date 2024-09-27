@@ -1,13 +1,8 @@
-html {
-  font-size: 62.5%;
-}
-
 body {
   font-family: monospace;
   margin-top: 1.6rem;
   display: flex;
   flex-direction: column;
-  gap: 10vh;
 }
 
 header {
@@ -15,49 +10,60 @@ header {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 0 8rem;
-  gap: 2rem;
+  gap: 10px;
+  margin-bottom: 2%;
 }
 
 header h1 {
-  font-size: 4.8rem;
+  font-size: 20pt;
+  text-align: center;
 }
 
 header h2 {
-  font-size: 2.4rem;
+  text-align: center;
+  font-size: 14pt;
 }
 
-article {
+label{
+  font-weight: bold;
+  font-size: 14pt;
+}
+
+.title{
+  font-weight: bold;
+  font-size: 20pt;
+  text-align: center;
+}
+
+.name{
+  font-size: 16pt;
+  text-align: center;
+  margin-bottom: 5%;
+}
+
+.container{
+  display: flex;
+  flex-direction: row;
+  margin-left: auto;
+  margin-right: auto;
+  column-gap: 50px;
+  row-gap: 50px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.content{
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: 3.2rem;
-}
-
-article label {
-  margin: 1.6rem 0;
-}
-
-article input {
-  font-size: 2.4rem;
-}
-
-h1 {
   text-align: center;
-}
-
-h2 {
-  text-align: center;
-}
-
-body {
-  font-family: monospace;
+  font-size: 13pt;
+  row-gap: 10px;
 }
 
 .button {
   width: 150px;
   height: 40px;
   border-radius: 30px;
-  font-size: 14pt;
-}
+  font-size: 12pt;
+} 
