@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
+    <link rel="stylesheet" href="style.css" />
+    <script src="../lib/jsplumb-browser-ui.umd.js"></script>
     <title>Automato Finito</title>
   </head>
   <body>
@@ -12,15 +13,29 @@
       <h2>Guilherme Tomiasi & Willian Murayama</h2>
     </header>
     <div>
-      <button onclick="addNewNode()">Add New Node</button>
-
-      <div
-        id="myDiagramDiv"
-        style="width: 400px; height: 600px; background-color: #dae4e4"
-      ></div>
+      <button onclick="addNewNode()">Adicionar estado</button>
+      <button onclick="addNewNode()">Adicionar estado</button>
     </div>
-    <a href="../index.html">Voltar ao início</a>
-    <script src="https://cdn.jsdelivr.net/npm/gojs/release/go.js"></script>
+    <div>
+      <div id="myDiagramDiv" style="position: relative;">
+        <div
+          id="circle1"
+          style="position: absolute; padding: 20px; border-width: 1px;border: solid 2px red;border-radius: 100%"
+        >
+          a
+        </div>
+        <div
+          id="circle2"
+          style="position: absolute; padding: 50px; border-width: 1px;border: solid 2px red;border-radius: 100%;"
+        >
+          b
+        </div>
+      </div>
+    </div>
+    <button onclick="window.location.href='../index.html'" class="button">
+      Voltar ao início
+    </button>
+
     <script src="script.js"></script>
   </body>
 </html>
