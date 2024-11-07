@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
-    <script src="../lib/jsplumb-browser-ui.umd.js"></script>
     <title>Automato Finito</title>
   </head>
   <body>
@@ -13,29 +12,26 @@
       <h2>Guilherme Tomiasi & Willian Murayama</h2>
     </header>
     <div>
-      <button onclick="addNewNode()">Adicionar estado</button>
-      <button onclick="addNewNode()">Adicionar estado</button>
-    </div>
-    <div>
-      <div id="myDiagramDiv" style="position: relative;">
-        <div
-          id="circle1"
-          style="position: absolute; padding: 20px; border-width: 1px;border: solid 2px red;border-radius: 100%"
-        >
-          a
-        </div>
-        <div
-          id="circle2"
-          style="position: absolute; padding: 50px; border-width: 1px;border: solid 2px red;border-radius: 100%;"
-        >
-          b
-        </div>
+      <div>
+        <label for="">Nome nó:</label>
+        <input type="text" id="NodeNameInput" placeholder="" />
       </div>
+      <div>
+        <label for="">Letra: </label>
+        <input type="text" id="CharacterInput" />
+      </div>
+      <div>
+        <button onclick="addNode()">Adicionar estado</button>
+      </div>
+    </div>
+
+    <div>
+      <div id="myDiagramDiv" style="position: relative"></div>
     </div>
     <button onclick="window.location.href='../index.html'" class="button">
       Voltar ao início
     </button>
-
+    <script src="../lib/jsplumb-browser-ui.umd.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
