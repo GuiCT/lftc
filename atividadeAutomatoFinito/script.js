@@ -1,16 +1,11 @@
 jsPlumbContainer = document.getElementById("myDiagramDiv");
-// jsPlumb.ready(function () {
+console.log(jsPlumb.version); // Logs the jsPlumb version
+
 const instance = jsPlumb.newInstance({
   container: jsPlumbContainer,
   dragOptions: {
     containment: "notNegative",
   },
-});
-// });
-
-// Add double-click event handler to the jsPlumb instance
-instance.bind("click", (endpoint) => {
-  console.log("aaaaaaa");
 });
 
 let number = 0;
@@ -48,57 +43,59 @@ function addNode() {
 // Example of adding jsPlumb endpoint to new node
 function addNewNode(elementId) {
   const node = document.getElementById(elementId);
+  // Add a new endpoint to a node
   if (node) {
     instance.addEndpoint(node, {
       target: true,
       source: true,
       endpoints: ["Dot"],
-      // reattachConnections: true,
-      // anchor: "AutoDefault",
-      // anchor: "Continuous",
-      anchor: { type: "Perimeter", options: { shape: "Circle" } },
-      // connector: "Straight",
-
+      // anchor: "Perimeter", // Default anchor, will be changed later on each connection
+      anchor: {
+        type: "Perimeter",
+        options: { shape: "Circle", anchorCount: 2000 },
+      },
+      maxConnections: -1,
       connectorOverlays: [
         { type: "PlainArrow", options: { location: 1 } },
         { type: "Label", options: { label: "", id: `label-${Date.now()}` } },
       ],
+      dragOptions: {
+        cursor: "pointer",
+        zIndex: 2000,
+      },
     });
   }
 }
 
-// const ep1 = instance.addEndpoint(document.getElementById("circle1"), {
-//   target: true,
-//   source: true,
-//   endpoint: "Dot",
-//   anchor: "AutoDefault",
-//   connector: "Straight",
-// });
-// const ep2 = instance.addEndpoint(document.getElementById("circle2"), {
-//   target: true,
-//   source: true,
-//   endpoint: "Dot",
-//   anchor: "AutoDefault",
-//   connector: "Straight",
-// });
-// const ep3 = instance.addEndpoint(document.getElementById("circle3"), {
-//   target: true,
-//   source: true,
-//   endpoint: "Dot",
-//   anchor: "AutoDefault",
-//   connector: "Straight",
-// });
+// Bind event to handle new connections and assign unique anchors to each one
+instance.bind("connection", function (info) {
+  // Prompt for the transition letter
+  const transitionLetter = window.prompt("Insira a letra da transição: ");
 
-// instance.connect({
-//   source: ep1,
-//   target: ep2,
-//   // anchor: "AutoDefault",
-//   // endpoints: ["Dot", "Blank"],
-//   overlays: [
-//     // { type:"Arrow", options:{location:1}},
-//     {
-//       type: "Label",
-//       options: { label: "foo", location: 50 },
-//     },
-//   ],
-// });
+  const connection = info.connection;
+
+  // Add the transition letter as a label to the connection
+  const label = connection.getOverlay("Label");
+  if (label) {
+    label.setLabel(transitionLetter); // Set the transition letter as the label
+  } else {
+    // If no label overlay exists, create one and set the label
+    connection.addOverlay({
+      type: "Label",
+      options: {
+        label: transitionLetter,
+        id: `label-${Date.now()}`,
+        events: {
+          click: (e, o) => alert("click!"),
+        },
+      },
+    });
+  }
+});
+instance.bind("", {});
+
+function getStructure() {
+  console.log(instance);
+  console.log(instance.getConnections());
+  console.log(instance.getEndpoints());
+}
