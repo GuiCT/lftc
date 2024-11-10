@@ -28,15 +28,10 @@
       <div class="content" style="padding-left: 20px">
         <span style="font-weight: bold; font-size: 16pt">Conversão</span>
         <div>
-          <button onclick="window.location.href='../index.html'" class="button">
-            Gramatica regular
-          </button>
+          <button id="generateGrammar" class="button">Gramatica regular</button>
+          <button id="automaton" class="button">Automato finito</button>
         </div>
-        <div>
-          <button onclick="window.location.href='../index.html'" class="button">
-            Automato finito
-          </button>
-        </div>
+
         <div>
           <span style="font-weight: bold; font-size: 16pt"
             >Voltar ao início</span
@@ -50,84 +45,12 @@
             </button>
           </div>
         </div>
-      </div>
-      <!-- </div> -->
-
-      <script src="script.js"></script>
-    </article>
-    <div>
-    
-      <h1>Generate Grammar from Regex</h1>
-  <label for="regexInput">Enter Regular Expression:</label>
-  <input type="text" id="regexInput" placeholder="e.g., (a|b)*">
-  <button id="generateGrammar">Generate Grammar</button>
-
-  <div id="result">Generated Grammar will appear here</div>
-
-  <script>
-    function generateGrammarFromRegex(regex) {
-      const resultDiv = document.getElementById('result');
-      resultDiv.innerHTML = '';  // Clear previous results
-
-      // Ensure regex is not empty
-      if (!regex) {
-        resultDiv.innerHTML = '<span class="error">Please enter a valid regular expression.</span>';
-        return;
-      }
-
-      const grammar = [];
-      let stateCounter = 0;
-      const startState = 'S';
-      let currentState = startState;
-      let stack = [];
-      let lastCharWasStar = false;
-
-      for (let i = 0; i < regex.length; i++) {
-        const char = regex[i];
         
-        if (char === '(') {
-          // Start a new branch, push current state to stack
-          stack.push(currentState);
-        } else if (char === ')') {
-          // End of group, pop the state stack
-          currentState = stack.pop();
-        } else if (char === '|') {
-          // Start a new alternative from the last saved state in the group
-          currentState = stack[stack.length - 1];
-        } else if (char === '*') {
-          // Apply Kleene star: loop back to current state's start
-          grammar.push(`${currentState} -> ${regex[i - 1]} ${currentState}`);
-          lastCharWasStar = true;
-        } else {
-          // For regular characters, create a new transition and state
-          const nextState = `S${++stateCounter}`;
-          
-          // Handle alternation or new branch, skipping if last char was '*'
-          if (!lastCharWasStar) {
-            grammar.push(`${currentState} -> ${char} ${nextState}`);
-          }
-          currentState = nextState;
-          lastCharWasStar = false;
-        }
-      }
-      
-      // Final state transition to λ
-      grammar.push(`${currentState} -> λ`);
+      </div>
+      <div style="font-size: 20pt" id="result"></div>
+      <script src="script.js"></script>
+      <script src="grammar.js"></script>
+    </article>
 
-      // Display generated grammar
-      resultDiv.innerHTML = '<h3>Generated Grammar:</h3>';
-      grammar.forEach(rule => {
-        const ruleElement = document.createElement('p');
-        ruleElement.innerText = rule;
-        resultDiv.appendChild(ruleElement);
-      });
-    }
-
-    document.getElementById('generateGrammar').addEventListener('click', () => {
-      const regexInput = document.getElementById('regexInput').value;
-      generateGrammarFromRegex(regexInput);
-    });
-  </script>
-    </div>
   </body>
 </html>
