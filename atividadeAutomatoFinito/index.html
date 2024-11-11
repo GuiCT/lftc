@@ -4,11 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
-    <title>Automato Finito</title>
+    <title>Autômato Finito</title>
   </head>
   <body>
     <header>
-      <h1>Simulador de Automato Finito</h1>
+      <h1>Simulador de Autômato Finito</h1>
       <h2>Guilherme Tomiasi & Willian Murayama</h2>
     </header>
     <div>
@@ -22,17 +22,34 @@
       </div>
       <div>
         <label for="initialState">Estado inicial: </label>
-        <select name="initialState" id="initStateSelect">
-        </select>
+        <select name="initialState" id="initStateSelect"></select>
       </div>
       <div>
         <button onclick="addNode()">Adicionar estado</button>
         <button onclick="startReading()">Iniciar leitura</button>
-        <button id="stepButton" onclick="advanceConfigurations()" disabled>Avançar</button>
+        <button id="stepButton" onclick="advanceConfigurations()" disabled>
+          Avançar
+        </button>
       </div>
     </div>
-    <div style="display: flex; flex-direction: row; margin-top: 10px; gap: 40px; margin-bottom: 10px;">
-      <div id="myDiagramDiv" style="position: relative; height: 400px; width: 400px; border: dashed 1px red;"></div>
+    <div
+      style="
+        display: flex;
+        flex-direction: row;
+        margin-top: 10px;
+        gap: 40px;
+        margin-bottom: 10px;
+      "
+    >
+      <div
+        id="myDiagramDiv"
+        style="
+          position: relative;
+          height: 400px;
+          width: 400px;
+          border: dashed 1px red;
+        "
+      ></div>
       <div id="configurations">Configurações</div>
     </div>
     <button onclick="window.location.href='../index.html'" class="button">
