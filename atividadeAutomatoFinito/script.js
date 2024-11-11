@@ -4,7 +4,7 @@ console.log(jsPlumb.version); // Logs the jsPlumb version
 const instance = jsPlumb.newInstance({
   container: jsPlumbContainer,
   dragOptions: {
-    containment: "notNegative",
+    containment: "parentEnclosed",
   },
 });
 
@@ -13,9 +13,22 @@ const instance = jsPlumb.newInstance({
  */
 const mapIdToStateName = new Map();
 const automataDefinition = new AutomataDefinition();
+const selectElement = document.getElementById("initStateSelect");
+let configurations = [];
+
+selectElement.addEventListener("change", (e) => {
+  const selectedState = e.target.value;
+  automataDefinition.setInitialState(selectedState);
+});
 
 let number = 0;
 document.getElementById("NodeNameInput").value = `q${number}`;
+
+const mapEnglishStatusToPortuguese = {
+  "READING": "Em leitura",
+  "ACCEPTED": "Aceita",
+  "REJECTED": "Rejeitada",
+};
 
 // Function to add a new node dynamically
 function addNode() {
@@ -47,6 +60,10 @@ function addNode() {
   // Increment the number and update the input field
   number = number + 1;
   document.getElementById("NodeNameInput").value = `q${number}`; // Update input field with the new number
+  
+  const option = document.createElement("option");
+  option.text = nodeStateName;
+  selectElement.add(option);
 }
 
 // Example of adding jsPlumb endpoint to new node
@@ -85,7 +102,6 @@ function addNewNode(elementId) {
 
 // Bind event to handle new connections and assign unique anchors to each one
 instance.bind("connection", function (info) {
-  debugger;
   // Prompt for the transition letter
   const transitionLetter = window.prompt("Insira a letra da transição: ");
 
@@ -119,8 +135,35 @@ instance.bind("connection", function (info) {
 });
 instance.bind("", {});
 
-function getStructure() {
-  console.log(instance);
-  console.log(instance.getConnections());
-  console.log(instance.getEndpoints());
+function setConfigurations(newValue) {
+  configurations = newValue;
+  document.getElementById("stepButton").disabled = newValue.length === 0;
+  // reset html in configurations div
+  document.getElementById("configurations").innerHTML = "";
+  // map configurations through history
+  configurations.forEach((config, index) => {
+    const p = document.createElement("p");
+    let text = `Configuração ${index + 1}: ${mapEnglishStatusToPortuguese[config.currentStatus]}`;
+    config.history.forEach((transition, index) => {
+      text += `\n${transition.origin} --(${transition.symbol})--> ${transition.target}`;
+    });
+    text += `\n${config.currentState}`;
+    p.innerText = text;
+    document.getElementById("configurations").appendChild(p);
+  });
+}
+
+function startReading() {
+  const initialState = document.getElementById("initStateSelect").value;  
+  automataDefinition.setInitialState(initialState)
+  automataDefinition.addFinalState("q1", true);
+  const initialString = document.getElementById("StringInput").value;
+  setConfigurations(automataDefinition.startReadingConfiguration(initialString));
+  document.getElementById("stepButton").disabled = false;
+  console.log(configurations);
+}
+
+function advanceConfigurations() {
+  setConfigurations(automataDefinition.advanceMultipleConfigurations(configurations));
+  console.log(configurations);
 }

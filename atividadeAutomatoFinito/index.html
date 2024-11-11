@@ -17,17 +17,23 @@
         <input type="text" id="NodeNameInput" placeholder="" />
       </div>
       <div>
-        <label for="">Letra: </label>
-        <input type="text" id="CharacterInput" />
+        <label for="">Cadeia de entrada: </label>
+        <input type="text" id="StringInput" />
+      </div>
+      <div>
+        <label for="initialState">Estado inicial: </label>
+        <select name="initialState" id="initStateSelect">
+        </select>
       </div>
       <div>
         <button onclick="addNode()">Adicionar estado</button>
-        <button onclick="getStructure()">Executar</button>
+        <button onclick="startReading()">Iniciar leitura</button>
+        <button id="stepButton" onclick="advanceConfigurations()" disabled>Avançar</button>
       </div>
     </div>
-
-    <div>
-      <div id="myDiagramDiv" style="position: relative"></div>
+    <div style="display: flex; flex-direction: row; margin-top: 10px; gap: 40px; margin-bottom: 10px;">
+      <div id="myDiagramDiv" style="position: relative; height: 400px; width: 400px; border: dashed 1px red;"></div>
+      <div id="configurations">Configurações</div>
     </div>
     <button onclick="window.location.href='../index.html'" class="button">
       Voltar ao início

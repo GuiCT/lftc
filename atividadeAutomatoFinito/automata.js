@@ -294,7 +294,7 @@ class AutomataDefinition {
      */
     advanceMultipleConfigurations(configurations) {
         return configurations.flatMap((config) => {
-            return automataTest.advanceConfiguration(config);
+            return this.advanceConfiguration(config);
         });
     }
 
