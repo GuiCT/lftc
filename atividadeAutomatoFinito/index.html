@@ -1,62 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css" />
-    <title>Autômato Finito</title>
-  </head>
-  <body>
-    <header>
-      <h1>Simulador de Autômato Finito</h1>
-      <h2>Guilherme Tomiasi & Willian Murayama</h2>
-    </header>
-    <div>
-      <div>
-        <label for="">Nome nó:</label>
-        <input type="text" id="NodeNameInput" placeholder="" />
-      </div>
-      <div>
-        <label for="">Cadeia de entrada: </label>
-        <input type="text" id="StringInput" />
-      </div>
-      <div>
-        <label for="initialState">Estado inicial: </label>
-        <select name="initialState" id="initStateSelect"></select>
-      </div>
-      <div>
-        <button onclick="addNode()">Adicionar estado</button>
-        <button onclick="startReading()">Iniciar leitura</button>
-        <button id="stepButton" onclick="advanceConfigurations()" disabled>
-          Avançar
-        </button>
-      </div>
-    </div>
-    <div
-      style="
-        display: flex;
-        flex-direction: row;
-        margin-top: 10px;
-        gap: 40px;
-        margin-bottom: 10px;
-      "
-    >
-      <div
-        id="myDiagramDiv"
-        style="
-          position: relative;
-          height: 400px;
-          width: 400px;
-          border: dashed 1px red;
-        "
-      ></div>
-      <div id="configurations">Configurações</div>
-    </div>
-    <button onclick="window.location.href='../index.html'" class="button">
-      Voltar ao início
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="reset.css" />
+  <link rel="stylesheet" href="style.css" />
+  <title>Autômato Finito</title>
+</head>
+
+<body>
+  <header>
+    <h1>Simulador de Autômato Finito</h1>
+    <h2>Guilherme Tomiasi & Willian Murayama</h2>
+  </header>
+  <div>
+    <label for="">Cadeia de entrada: </label>
+    <input type="text" id="StringInput" />
+    <button id="startButton" onclick="startReading()" disabled>Iniciar leitura</button>
+    <button id="stepButton" onclick="advanceConfigurations()" disabled>
+      Avançar
     </button>
-    <script src="automata.js"></script>
-    <script src="../lib/jsplumb-browser-ui.umd.js"></script>
-    <script src="script.js"></script>
-  </body>
+  </div>
+  <div>
+    <div>
+      <label for="">Nome nó:</label>
+      <input type="text" id="NodeNameInput" placeholder="" />
+      <button onclick="addNode()">Adicionar estado</button>
+    </div>
+  </div>
+  <div id="automataReadingSettingsDiv" style="display: none;">
+    <div id="initialStateDiv">
+      <label for="initialState">Estado inicial: </label>
+      <select name="initialState" id="initStateSelect"></select>
+    </div>
+    <div id="finalStatesDiv">
+      <label for="finalStates">Estados finais: </label>
+      <select name="finalStates" id="finalStatesSelect" multiple></select>
+    </div>
+    <div id="deleteStateDiv">
+      <label for="deleteState">Deletar estado</label>
+      <select name="deleteState" id="deleteStateSelect"></select>
+      <button onclick="deleteSelectedState()">Deletar</button>
+    </div>
+  </div>
+  <div id="canvasAndResults">
+    <div id="myDiagramDiv"></div>
+    <div id="configurations"></div>
+  </div>
+  <button onclick="window.location.href='../index.html'" class="button">
+    Voltar ao início
+  </button>
+  <script src="automata.js"></script>
+  <script src="../lib/jsplumb-browser-ui.umd.js"></script>
+  <script src="script.js"></script>
+</body>
+
 </html>

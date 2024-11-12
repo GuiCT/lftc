@@ -8,18 +8,45 @@ const instance = jsPlumb.newInstance({
   },
 });
 
+const selectInitialStateElement = document.getElementById("initStateSelect");
+const finalStatesElement = document.getElementById("finalStatesSelect");
+const deleteStateElement = document.getElementById("deleteStateSelect");
+const automataReadingSettingsDiv = document.getElementById("automataReadingSettingsDiv");
+const startButton = document.getElementById("startButton");
+const stepButton = document.getElementById("stepButton");
+
 /**
  * @type {Map<string, string>}
  */
 const mapIdToStateName = new Map();
-const automataDefinition = new AutomataDefinition();
-const selectElement = document.getElementById("initStateSelect");
-let configurations = [];
 
-selectElement.addEventListener("change", (e) => {
-  const selectedState = e.target.value;
-  automataDefinition.setInitialState(selectedState);
-});
+function syncStates() {
+  selectInitialStateElement.innerHTML = "";
+  finalStatesElement.innerHTML = "";
+  deleteStateElement.innerHTML = "";
+  mapIdToStateName.entries().forEach(([id, state]) => {
+    const option = document.createElement("option");
+    option.text = state;
+    option.value = id;
+    selectInitialStateElement.add(option);
+    finalStatesElement.add(option.cloneNode(true));
+    deleteStateElement.add(option.cloneNode(true));
+  });
+
+  const isEmpty = mapIdToStateName.size === 0;
+
+  if (isEmpty) {
+    automataReadingSettingsDiv.style.display = "none";
+    startButton.disabled = true;
+  } else {
+    automataReadingSettingsDiv.style.display = "flex";
+    startButton.disabled = false;
+  }
+}
+
+const letterValidationRegex = /^[a-zA-Zλ]$/;
+let automataDefinition = null;
+let configurations = [];
 
 let number = 0;
 document.getElementById("NodeNameInput").value = `q${number}`;
@@ -39,16 +66,16 @@ function addNode() {
   const nodeId = `node-${Date.now()}`; // Unique ID based on timestamp
   newNode.id = nodeId;
   newNode.style.position = "absolute";
-  newNode.style.padding = "20px";
+  newNode.style.padding = "3rem";
   newNode.style.borderWidth = "1px";
   newNode.style.border = "solid 2px red";
   newNode.style.borderRadius = "100%";
+  newNode.style.fontSize = "2rem";
 
   // Set the inner text to the current number
   const nodeStateName = document.getElementById("NodeNameInput").value
   newNode.innerText = nodeStateName;
   mapIdToStateName.set(nodeId, nodeStateName);
-  automataDefinition.addState(nodeStateName);
 
   // Append the new node to the container
   const container = document.getElementById("myDiagramDiv");
@@ -60,10 +87,8 @@ function addNode() {
   // Increment the number and update the input field
   number = number + 1;
   document.getElementById("NodeNameInput").value = `q${number}`; // Update input field with the new number
-  
-  const option = document.createElement("option");
-  option.text = nodeStateName;
-  selectElement.add(option);
+
+  syncStates();
 }
 
 // Example of adding jsPlumb endpoint to new node
@@ -75,18 +100,12 @@ function addNewNode(elementId) {
     return;
   }
 
-  // Add a new endpoint to a node
   for (anchor of ["Left", "Right"]) {
     instance.addEndpoint(node, {
       target: true,
       source: true,
       endpoints: ["Dot"],
-      // anchor: "Perimeter", // Default anchor, will be changed later on each connection
       anchor: anchor,
-      // anchor: {
-      //   type: "Perimeter",
-      //   options: { shape: "Circle", anchorCount: 2000 },
-      // },
       maxConnections: -1,
       connectorOverlays: [
         { type: "PlainArrow", options: { location: 1 } },
@@ -100,42 +119,44 @@ function addNewNode(elementId) {
   }
 }
 
-// Bind event to handle new connections and assign unique anchors to each one
 instance.bind("connection", function (info) {
-  // Prompt for the transition letter
-  const transitionLetter = window.prompt("Insira a letra da transição: ");
+  let transitionLetter = window.prompt("Insira a letra da transição: ");
+  if (transitionLetter === "") {
+    transitionLetter = "λ";
+  }
+  if (letterValidationRegex.test(transitionLetter) === false) {
+    alert("A transição deve ser uma letra.");
+    instance.deleteConnection(info.connection);
+    return;
+  }
 
   const connection = info.connection;
-  const sourceId = connection.sourceId;
-  const targetId = connection.targetId;
-  const sourceStateName = mapIdToStateName.get(sourceId);
-  const targetStateName = mapIdToStateName.get(targetId);
-  
-  automataDefinition.addAlphabet(transitionLetter);
-  automataDefinition.addTransition(sourceStateName, transitionLetter, targetStateName);
-  console.log(automataDefinition);
+  const source = info.source;
+  const target = info.target;
 
-  // Add the transition letter as a label to the connection
-  const label = connection.getOverlay("Label");
-  if (label) {
-    label.setLabel(transitionLetter); // Set the transition letter as the label
+  instance.deleteConnection(connection);
+  const connections = instance.getConnections({ source, target });
+  if (connections.length === 1) {
+    debugger;
+    const connection = connections[0];
+    addLetterToConnection(connection, transitionLetter);
   } else {
-    // If no label overlay exists, create one and set the label
-    connection.addOverlay({
-      type: "Label",
-      options: {
-        label: transitionLetter,
-        id: `label-${Date.now()}`,
-        events: {
-          click: (e, o) => alert("click!"),
-        },
-      },
+    instance.connect({
+      source,
+      target,
+      anchor: ["Left", "Right"],
+      connector: "Bezier",
+      overlays: [
+        { type: "PlainArrow", options: { location: 1 } },
+        { type: "Label", options: { label: transitionLetter, id: `label-${Date.now()}`, cssClass: 'customLabel' } },
+      ],
+      doNotFireConnectionEvent: true,
     });
   }
 });
-instance.bind("", {});
 
 function setConfigurations(newValue) {
+  const initialString = document.getElementById("StringInput").value;
   configurations = newValue;
   document.getElementById("stepButton").disabled = newValue.length === 0;
   // reset html in configurations div
@@ -144,26 +165,95 @@ function setConfigurations(newValue) {
   configurations.forEach((config, index) => {
     const p = document.createElement("p");
     let text = `Configuração ${index + 1}: ${mapEnglishStatusToPortuguese[config.currentStatus]}`;
+    let currentInput = initialString;
     config.history.forEach((transition, index) => {
-      text += `\n${transition.origin} --(${transition.symbol})--> ${transition.target}`;
+      text += `\n[${currentInput}] ${transition.origin} --(${transition.symbol || "λ"})--> ${transition.target}`;
+      currentInput = currentInput.slice(transition.symbol.length);
+      text += ` [${currentInput}]`;
     });
     text += `\n${config.currentState}`;
     p.innerText = text;
     document.getElementById("configurations").appendChild(p);
   });
+  const noReadingConfigurations = configurations.every((config) => config.currentStatus !== "READING");
+  if (noReadingConfigurations) {
+    document.getElementById("stepButton").disabled = true;
+  }
+}
+
+function addLetterToConnection(connection, letter) {
+  const overlays = connection.getOverlays();
+  for (const v of Object.values(overlays)) {
+    if (v.type === "Label") {
+      const currentLabel = v.getLabel();
+      v.setLabel(`${currentLabel}\n${letter}`);
+    }
+  }
+}
+
+function getTransitionLettersFromConnection(connection) {
+  for (const v of Object.values(connection.overlays)) {
+    if (v.type === "Label") {
+      return v.getLabel().split("\n").map((letter) => letter === "λ" ? "" : letter);
+    }
+  }
 }
 
 function startReading() {
-  const initialState = document.getElementById("initStateSelect").value;  
-  automataDefinition.setInitialState(initialState)
-  automataDefinition.addFinalState("q1", true);
+  const initialStateId = document.getElementById("initStateSelect").value;
+  const initialState = mapIdToStateName.get(initialStateId);
+  const finalStates = Array.from(document.getElementById("finalStatesSelect").selectedOptions)
+    .map((stateId) => mapIdToStateName.get(stateId.value));
+
+  if (initialState === "") {
+    alert("Selecione um estado inicial.");
+    return;
+  }
+
+  if (finalStates.length === 0) {
+    alert("Selecione ao menos um estado final.");
+    return;
+  }
+
+  automataDefinition = new AutomataDefinition();
+  const states = Array.from(mapIdToStateName.values());
+  states.forEach((state) => automataDefinition.addState(state));
+  const connections = instance.getConnections();
+  connections.forEach((connection) => {
+    const sourceId = connection.sourceId;
+    const sourceState = mapIdToStateName.get(sourceId);
+    const targetId = connection.targetId;
+    const targetState = mapIdToStateName.get(targetId);
+    const transitionLetters = getTransitionLettersFromConnection(connection);
+    transitionLetters.forEach((transitionLetter) => {
+      automataDefinition.addAlphabet(transitionLetter);
+      automataDefinition.addTransition(sourceState, transitionLetter, targetState);
+    });
+  });
+  automataDefinition.setInitialState(initialState);
+  finalStates.forEach((state) => automataDefinition.addFinalState(state));
   const initialString = document.getElementById("StringInput").value;
   setConfigurations(automataDefinition.startReadingConfiguration(initialString));
   document.getElementById("stepButton").disabled = false;
-  console.log(configurations);
 }
 
 function advanceConfigurations() {
+  if (configurations.length === 0 || automataDefinition === null) {
+    alert("Nenhuma configuração para avançar.");
+    return;
+  }
   setConfigurations(automataDefinition.advanceMultipleConfigurations(configurations));
-  console.log(configurations);
+}
+
+function deleteSelectedState() {
+  const selectedState = document.getElementById("deleteStateSelect").value;
+  const connections = instance.getConnections();
+  connections
+    .filter((connection) => connection.sourceId === selectedState || connection.targetId === selectedState)
+    .forEach((connection) => instance.deleteConnection(connection));
+  const stateElement = document.getElementById(selectedState);
+  instance.selectEndpoints({ source: stateElement }).deleteAll();
+  stateElement.remove();
+  mapIdToStateName.delete(selectedState);
+  syncStates();
 }
