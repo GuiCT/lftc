@@ -1,3 +1,4 @@
+/** @import { AutomataDefinition } from '../lib/automata.js' */
 jsPlumbContainer = document.getElementById("myDiagramDiv");
 console.log(jsPlumb.version); // Logs the jsPlumb version
 
