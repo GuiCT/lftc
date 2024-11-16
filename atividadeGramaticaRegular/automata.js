@@ -1,3 +1,4 @@
+/** @import {*} from 'atividadeGramaticaRegular\grammar.js' */
 // A=({Q},Σ,δ,q0,{F})
 // Conjunto de estados finitos
 // Alfabeto de entrada
@@ -16,6 +17,7 @@
 //     }
 
 // }
+
 
 class FiniteAutomaton {
     constructor() {
