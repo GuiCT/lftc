@@ -179,6 +179,7 @@ if (sessionStorage.getItem('generatedRules')) {
     list.appendChild(newRule); 
   }
   validateAllRules();
+  sessionStorage.removeItem('generatedRules')
 }
 
 
