@@ -219,7 +219,6 @@ function generateRegex() {
 
 function generateAutomata() {
   const currentHref = window.location.href;
-  // // remove two last paths
   window.sessionStorage.setItem(
     "grammarToAutomata",
     JSON.stringify(getGrammar())
@@ -227,6 +226,5 @@ function generateAutomata() {
   let newPath = currentHref.substring(0, currentHref.lastIndexOf("/"));
   newPath = newPath.substring(0, newPath.lastIndexOf("/"));
   newPath += "/atividadeAutomatoFinito/index.html";
-  // // // newPath += "/atividadeGramaticaRegular/index.html";
   window.location.href = newPath;
 }

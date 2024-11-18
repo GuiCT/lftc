@@ -294,8 +294,26 @@ function deleteSelectedState() {
 if (sessionStorage.getItem("grammarToAutomata")) {
   const grammar = JSON.parse(sessionStorage.getItem("grammarToAutomata"));
   console.log(grammar);
-  
-  sessionStorage.removeItem("grammarToAutomata")
-  const automata = grammarToAutomata(grammar)
+
+  sessionStorage.removeItem("grammarToAutomata");
+  const automata = grammarToAutomata(grammar);
   console.log(automata);
+}
+
+function automataToGrammar() {
+  const currentHref = window.location.href;
+  window.sessionStorage.setItem("automataToGrammar",null);
+  let newPath = currentHref.substring(0, currentHref.lastIndexOf("/"));
+  newPath = newPath.substring(0, newPath.lastIndexOf("/"));
+  newPath += "/atividadeGramaticaRegular/index.html";
+  window.location.href = newPath;
+}
+
+function automataToRegex() {
+  const currentHref = window.location.href;
+  window.sessionStorage.setItem("automataToRegex",null);
+  let newPath = currentHref.substring(0, currentHref.lastIndexOf("/"));
+  newPath = newPath.substring(0, newPath.lastIndexOf("/"));
+  newPath += "/atividadeRegex/index.html";
+  window.location.href = newPath;
 }
