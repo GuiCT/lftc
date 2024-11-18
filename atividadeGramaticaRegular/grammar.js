@@ -159,3 +159,20 @@ addRuleButton.addEventListener("click", (e) => {
   e.preventDefault();
   list.appendChild(renderListComponent());
 });
+
+// If the sessionStorage contains rules, load them
+if (sessionStorage.getItem('generatedRules')) {
+  const rules = JSON.parse(sessionStorage.getItem('generatedRules'));
+  for (const rule of rules) {
+    const [lhs, rhs] = rule.split(' -> ');
+    const rhsWithoutSpacesOrLambdas = rhs
+      .split(' ')
+      .join('')
+      .replace('λ', '');
+    const newRule = renderListComponent();
+    newRule.children[0].value = lhs;
+    newRule.children[2].value = rhsWithoutSpacesOrLambdas;
+    list.appendChild(newRule); 
+  }
+  validateAllRules();
+}
