@@ -1,3 +1,7 @@
+/**
+ * @import * from '../lib/convertions';
+ */
+
 const list = document.getElementById("list");
 const resultTree = document.getElementById('result');
 const rulePattern = new RegExp("^[a-z]*[A-Z]?$");
@@ -175,4 +179,24 @@ if (sessionStorage.getItem('generatedRules')) {
     list.appendChild(newRule); 
   }
   validateAllRules();
+}
+
+
+function generateRegex() {
+  const parentElement = document.getElementById("list")
+  let arrayRegex=[]
+  for (const child of parentElement.children) {
+    arrayRegex.push(child.getElementsByTagName("input")[1].value+" -> "+child.getElementsByTagName("input")[1].value)
+    // console.log("Child using for...of:", child.getElementsByTagName("input")[1].value);
+  }
+  // console.log();
+    
+  const currentHref = window.location.href;
+  // // remove two last paths
+  window.sessionStorage.setItem("grammarToRegex", JSON.stringify(grammarToRegex(arrayRegex)));
+  let newPath = currentHref.substring(0, currentHref.lastIndexOf("/"));
+  newPath = newPath.substring(0, newPath.lastIndexOf("/"));
+  newPath += "/atividadeRegex/index.html";
+  // // // newPath += "/atividadeGramaticaRegular/index.html";
+  window.location.href = newPath;
 }

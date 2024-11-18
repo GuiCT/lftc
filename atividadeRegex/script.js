@@ -77,3 +77,7 @@ function generateGrammar() {
   newPath += "/atividadeGramaticaRegular/index.html";
   window.location.href = newPath;
 }
+
+if (sessionStorage.getItem('grammarToRegex')) {
+  const regex = JSON.parse(sessionStorage.getItem('grammarToRegex'));
+document.getElementById("input_regex").value=regex}
