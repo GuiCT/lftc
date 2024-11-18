@@ -12,8 +12,8 @@ const inputRegex = document.getElementById("input_regex");
 const inputTest = document.getElementById("input_test");
 
 // Resetting
-inputRegex.value = "^Exemplo$"
-inputTest.value = "Exemplo"
+inputRegex.value = "^Exemplo$";
+inputTest.value = "Exemplo";
 
 let regexIsValid = true;
 let regexObject = new RegExp("");
@@ -40,10 +40,10 @@ function validateTestInput() {
   if (regexIsValid) {
     if (regexObject.test(inputTest.value)) {
       inputTest.style.color = "green";
-      inputTest.style.backgroundColor = "#90EE90"
+      inputTest.style.backgroundColor = "#90EE90";
     } else {
       inputTest.style.color = "red";
-      inputTest.style.backgroundColor = "#FF7F7F"
+      inputTest.style.backgroundColor = "#FF7F7F";
     }
   }
 }
@@ -64,12 +64,19 @@ function generateGrammar() {
   // Alerta em caso de letra maiúscula
 
   if (inputRegexValue.match(/[A-Z]/)) {
-    alert("Para realizar conversão de expressões regulares para gramáticas regulares, é necessário que a expressão regular seja composta apenas por letras minúsculas.");
+    alert(
+      "Para realizar conversão de expressões regulares para gramáticas regulares, é necessário que a expressão regular seja composta apenas por letras minúsculas."
+    );
     return;
   }
 
-  const generatedRules = changeStatesToLetters(regexToGrammar(inputRegex.value));
-  window.sessionStorage.setItem("generatedRules", JSON.stringify(generatedRules));
+  const generatedRules = changeStatesToLetters(
+    regexToGrammar(inputRegex.value)
+  );
+  window.sessionStorage.setItem(
+    "generatedRules",
+    JSON.stringify(generatedRules)
+  );
   const currentHref = window.location.href;
   // remove two last paths
   let newPath = currentHref.substring(0, currentHref.lastIndexOf("/"));
@@ -78,6 +85,13 @@ function generateGrammar() {
   window.location.href = newPath;
 }
 
-if (sessionStorage.getItem('grammarToRegex')) {
-  const regex = JSON.parse(sessionStorage.getItem('grammarToRegex'));
-document.getElementById("input_regex").value=regex}
+if (sessionStorage.getItem("grammarToRegex")) {
+  const regex = JSON.parse(sessionStorage.getItem("grammarToRegex"));
+  console.log(regex);
+  console.log(grammarToRegex(regex));
+  
+  document.getElementById("input_regex").value = 
+  grammarToRegex(regex);
+
+  sessionStorage.removeItem("grammarToRegex")
+}

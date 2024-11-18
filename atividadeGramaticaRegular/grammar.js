@@ -3,7 +3,7 @@
  */
 
 const list = document.getElementById("list");
-const resultTree = document.getElementById('result');
+const resultTree = document.getElementById("result");
 const rulePattern = new RegExp("^[a-z]*[A-Z]?$");
 const addRuleButton = document.getElementById("add-rule");
 
@@ -28,20 +28,19 @@ function validateRule(element) {
 
   if (valid) {
     element.classList.remove("error");
-  }
-  else {
+  } else {
     element.classList.add("error");
   }
 
   return valid;
-};
+}
 
 function validateAllRules() {
   const rules = document.getElementsByClassName("rule");
   let hasInvalidRule = false;
 
   for (const rule of rules) {
-    const rightValueInput = rule.getElementsByTagName('input')[1];
+    const rightValueInput = rule.getElementsByTagName("input")[1];
     const isValidRule = validateRule(rightValueInput);
 
     if (!isValidRule) {
@@ -50,21 +49,21 @@ function validateAllRules() {
   }
 
   if (resultTree) {
-    resultTree.innerText = '';
+    resultTree.innerText = "";
 
     if (hasInvalidRule) {
-      resultTree.innerText = 'Regras inválidas';
+      resultTree.innerText = "Regras inválidas";
     }
   }
 
   return !hasInvalidRule;
-};
+}
 
 function composeTreeElement(tree) {
   const hasSubtrees = tree.subtrees && tree.subtrees.length > 0;
-  const treeElement = document.createElement('li');
-  const anchor = document.createElement('a');
-  anchor.href = '#';
+  const treeElement = document.createElement("li");
+  const anchor = document.createElement("a");
+  anchor.href = "#";
   anchor.innerText = tree.root;
   treeElement.appendChild(anchor);
 
@@ -73,7 +72,7 @@ function composeTreeElement(tree) {
     return treeElement;
   }
 
-  const ul = document.createElement('ul');
+  const ul = document.createElement("ul");
   for (const subtree in tree.subtrees) {
     const subtreeElement = composeTreeElement(tree.subtrees[subtree]);
     ul.appendChild(subtreeElement);
@@ -90,9 +89,9 @@ function getUserInput() {
   const userInput = document.getElementById("user-input");
   const val = userInput.value;
   const chars = val.split("");
-  chars.push("λ")
+  chars.push("λ");
   return chars;
-};
+}
 
 function validateInput() {
   if (!validateAllRules()) {
@@ -100,9 +99,10 @@ function validateInput() {
   }
 
   const rules = document.querySelectorAll(".rule");
-  const parsedRules = ['🏁 -> S'], usedLeftSide = ['🏁'];
+  const parsedRules = ["🏁 -> S"],
+    usedLeftSide = ["🏁"];
   for (const rule of rules) {
-    const children = rule.getElementsByTagName('input');
+    const children = rule.getElementsByTagName("input");
     const lv = children[0].value;
     const rvRawValue = children[1].value;
     let rv = rvRawValue.split("").join(" ");
@@ -127,12 +127,8 @@ function validateInput() {
 
   const grammar = new REGULAR_GRAMMAR.Grammar(parsedRules);
 
-  const rootProduction = '🏁';
-  const chart = REGULAR_GRAMMAR.parse(
-    tokenStream,
-    grammar,
-    rootProduction,
-  );
+  const rootProduction = "🏁";
+  const chart = REGULAR_GRAMMAR.parse(tokenStream, grammar, rootProduction);
 
   const state = chart.getFinishedRoot(rootProduction);
   // remove all children
@@ -141,12 +137,12 @@ function validateInput() {
   }
 
   if (state) {
-    const trees = state.traverse()['0'].subtrees;
+    const trees = state.traverse()["0"].subtrees;
     for (const tree in trees) {
-      const newDiv = document.createElement('div');
-      newDiv.classList.add('tree');
-      newDiv.id = 'displayTree';
-      const treeList = document.createElement('ul');
+      const newDiv = document.createElement("div");
+      newDiv.classList.add("tree");
+      newDiv.id = "displayTree";
+      const treeList = document.createElement("ul");
       const treeElement = composeTreeElement(trees[tree]);
       treeList.appendChild(treeElement);
       newDiv.appendChild(treeList);
@@ -155,9 +151,9 @@ function validateInput() {
     return true;
   }
 
-  resultTree.innerText = 'Entrada inválida'
+  resultTree.innerText = "Entrada inválida";
   return false;
-};
+}
 
 addRuleButton.addEventListener("click", (e) => {
   e.preventDefault();
@@ -165,39 +161,58 @@ addRuleButton.addEventListener("click", (e) => {
 });
 
 // If the sessionStorage contains rules, load them
-if (sessionStorage.getItem('generatedRules')) {
-  const rules = JSON.parse(sessionStorage.getItem('generatedRules'));
+if (sessionStorage.getItem("generatedRules")) {
+  const rules = JSON.parse(sessionStorage.getItem("generatedRules"));
   for (const rule of rules) {
-    const [lhs, rhs] = rule.split(' -> ');
-    const rhsWithoutSpacesOrLambdas = rhs
-      .split(' ')
-      .join('')
-      .replace('λ', '');
+    const [lhs, rhs] = rule.split(" -> ");
+    const rhsWithoutSpacesOrLambdas = rhs.split(" ").join("").replace("λ", "");
     const newRule = renderListComponent();
     newRule.children[0].value = lhs;
     newRule.children[2].value = rhsWithoutSpacesOrLambdas;
-    list.appendChild(newRule); 
+    list.appendChild(newRule);
   }
   validateAllRules();
-  sessionStorage.removeItem('generatedRules')
+  sessionStorage.removeItem("generatedRules");
 }
 
-
-function generateRegex() {
-  const parentElement = document.getElementById("list")
-  let arrayRegex=[]
+function getGrammar() {
+  const parentElement = document.getElementById("list");
+  let arrayRegex = [];
   for (const child of parentElement.children) {
-    arrayRegex.push(child.getElementsByTagName("input")[1].value+" -> "+child.getElementsByTagName("input")[1].value)
+    arrayRegex.push(
+      child.getElementsByTagName("input")[0].value +
+        " -> " +
+        child.getElementsByTagName("input")[1].value
+    );
     // console.log("Child using for...of:", child.getElementsByTagName("input")[1].value);
   }
-  // console.log();
-    
+  return arrayRegex;
+}
+
+function generateRegex() {
   const currentHref = window.location.href;
   // // remove two last paths
-  window.sessionStorage.setItem("grammarToRegex", JSON.stringify(grammarToRegex(arrayRegex)));
+  window.sessionStorage.setItem(
+    "grammarToRegex",
+    JSON.stringify(getGrammar())
+  );
   let newPath = currentHref.substring(0, currentHref.lastIndexOf("/"));
   newPath = newPath.substring(0, newPath.lastIndexOf("/"));
   newPath += "/atividadeRegex/index.html";
+  // // // newPath += "/atividadeGramaticaRegular/index.html";
+  window.location.href = newPath;
+}
+
+function generateAutomata() {
+  const currentHref = window.location.href;
+  // // remove two last paths
+  window.sessionStorage.setItem(
+    "grammarToAutomata",
+    JSON.stringify(getGrammar())
+  );
+  let newPath = currentHref.substring(0, currentHref.lastIndexOf("/"));
+  newPath = newPath.substring(0, newPath.lastIndexOf("/"));
+  newPath += "/atividadeAutomatoFinito/index.html";
   // // // newPath += "/atividadeGramaticaRegular/index.html";
   window.location.href = newPath;
 }
