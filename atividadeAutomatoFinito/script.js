@@ -291,14 +291,14 @@ function deleteSelectedState() {
   syncStates();
 }
 
-if (sessionStorage.getItem("grammarToAutomata")) {
-  const grammar = JSON.parse(sessionStorage.getItem("grammarToAutomata"));
-  console.log(grammar);
+// if (sessionStorage.getItem("grammarToAutomata")) {
+//   const grammar = JSON.parse(sessionStorage.getItem("grammarToAutomata"));
+//   console.log(grammar);
 
-  sessionStorage.removeItem("grammarToAutomata");
-  const automata = grammarToAutomata(grammar);
-  console.log(automata);
-}
+//   sessionStorage.removeItem("grammarToAutomata");
+//   const automata = grammarToAutomata(grammar);
+//   console.log(automata);
+// }
 
 function automataToGrammar() {
   const currentHref = window.location.href;

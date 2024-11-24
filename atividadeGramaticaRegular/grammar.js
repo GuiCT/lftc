@@ -179,14 +179,19 @@ function getGrammar() {
   const parentElement = document.getElementById("list");
   let arrayRegex = [];
   for (const child of parentElement.children) {
-    arrayRegex.push(
-      child.getElementsByTagName("input")[0].value +
-        " -> " +
-        child.getElementsByTagName("input")[1].value
-    );
+    if (child.getElementsByTagName("input")[1].value === "") {
+      arrayRegex.push(
+        child.getElementsByTagName("input")[0].value + " -> " + "λ"
+      );
+    } else {
+      arrayRegex.push(
+        child.getElementsByTagName("input")[0].value +
+          " -> " +
+          child.getElementsByTagName("input")[1].value
+      );
+    }
+
     // console.log("Child using for...of:", child.getElementsByTagName("input")[1].value);
   }
   return arrayRegex;
 }
-
-
