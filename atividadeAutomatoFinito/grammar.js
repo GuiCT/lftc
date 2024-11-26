@@ -1,5 +1,5 @@
 /** @import {*} from 'script' */
-let position=0
+let position = 0;
 // Function to add a new node dynamically
 function addNodeConvertion(stateName) {
   // Create a new div element
@@ -14,7 +14,7 @@ function addNodeConvertion(stateName) {
   newNode.style.border = "solid 2px red";
   newNode.style.borderRadius = "100%";
   newNode.style.fontSize = "2rem";
-  newNode.style.left = `${position}px`
+  newNode.style.left = `${position}px`;
 
   // Set the inner text to the current number
   // const nodeStateName = document.getElementById("NodeNameInput").value;
@@ -28,7 +28,7 @@ function addNodeConvertion(stateName) {
   // Add the node as a new endpoint in jsPlumb
   addNewNode(nodeId);
   syncStates();
-  position+=250
+  position += 250;
 }
 
 function connection(source, target, transition) {
@@ -73,6 +73,51 @@ function findKeyByValue(map, valueToFind) {
   return null; // Return null if no match is found
 }
 
+function automataToGrammar() {
+  const initialStateId = document.getElementById("initStateSelect").value;
+  const initialState = mapIdToStateName.get(initialStateId);
+  const finalStates = Array.from(
+    document.getElementById("finalStatesSelect").selectedOptions
+  ).map((stateId) => mapIdToStateName.get(stateId.value));
+  automataDefinition = new AutomataDefinition();
+  const states = Array.from(mapIdToStateName.values());
+  states.forEach((state) => automataDefinition.addState(state));
+  const connections = instance.getConnections();
+  connections.forEach((connection) => {
+    const sourceId = connection.sourceId;
+    const sourceState = mapIdToStateName.get(sourceId);
+    const targetId = connection.targetId;
+    const targetState = mapIdToStateName.get(targetId);
+    const transitionLetters = getTransitionLettersFromConnection(connection);
+    transitionLetters.forEach((transitionLetter) => {
+      automataDefinition.addAlphabet(transitionLetter);
+      automataDefinition.addTransition(
+        sourceState,
+        transitionLetter,
+        targetState
+      );
+    });
+  });
+  automataDefinition.setInitialState(initialState);
+  finalStates.forEach((state) => automataDefinition.addFinalState(state));
+  console.log(automataDefinition);
+  window.sessionStorage.setItem(
+    "automataToGrammar",
+    JSON.stringify(automataDefinition)
+  );
+
+  const currentHref = window.location.href;
+  // window.sessionStorage.setItem("automataToGrammar", null);
+  let newPath = currentHref.substring(0, currentHref.lastIndexOf("/"));
+  newPath = newPath.substring(0, newPath.lastIndexOf("/"));
+  newPath += "/atividadeGramaticaRegular/index.html";
+  window.location.href = newPath;
+  // }
+}
+
+if (sessionStorage.getItem("regexToAutomata")) {
+}
+
 if (sessionStorage.getItem("grammarToAutomata")) {
   const grammar = JSON.parse(sessionStorage.getItem("grammarToAutomata"));
   console.log(grammar);
@@ -87,18 +132,21 @@ if (sessionStorage.getItem("grammarToAutomata")) {
       automata.transitions[transition].target,
       automata.transitions[transition].symbol
     );
-    
   }
 
   const finalStatesSelect = document.getElementById("finalStatesSelect");
-  for(const finalStates in automata.finalStates){
-    Array.from(finalStatesSelect.options).forEach(option => {
-      if(option.value===findKeyByValue(mapIdToStateName,automata.finalStates[finalStates]))
-    option.selected = findKeyByValue(mapIdToStateName,automata.finalStates[finalStates])
-    
-   });
+  for (const finalStates in automata.finalStates) {
+    Array.from(finalStatesSelect.options).forEach((option) => {
+      if (
+        option.value ===
+        findKeyByValue(mapIdToStateName, automata.finalStates[finalStates])
+      )
+        option.selected = findKeyByValue(
+          mapIdToStateName,
+          automata.finalStates[finalStates]
+        );
+    });
   }
- 
 
   console.log(automata);
   // window.sessionStorage.clear();
