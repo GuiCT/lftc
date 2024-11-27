@@ -1,12 +1,13 @@
 /** @import {*} from 'script' */
-let position = 0;
+
 // Function to add a new node dynamically
 function addNodeConvertion(stateName) {
   // Create a new div element
   const newNode = document.createElement("div");
 
   // Set an ID and class for the new node
-  const nodeId = `node-${Date.now()}`; // Unique ID based on timestamp
+  // As the nodes are generated in order, using timestamp only is a bad idea
+  const nodeId = `node-${Date.now()}-${stateName}`;
   newNode.id = nodeId;
   newNode.style.position = "absolute";
   newNode.style.padding = "3rem";
@@ -14,10 +15,11 @@ function addNodeConvertion(stateName) {
   newNode.style.border = "solid 2px red";
   newNode.style.borderRadius = "100%";
   newNode.style.fontSize = "2rem";
-  newNode.style.left = `${position}px`;
+  // random position
+  newNode.style.left = `${Math.floor(Math.random() * 80)}%`;
+  newNode.style.top = `${Math.floor(Math.random() * 80)}%`;
 
   // Set the inner text to the current number
-  // const nodeStateName = document.getElementById("NodeNameInput").value;
   newNode.innerText = stateName;
   mapIdToStateName.set(nodeId, stateName);
 
@@ -28,7 +30,6 @@ function addNodeConvertion(stateName) {
   // Add the node as a new endpoint in jsPlumb
   addNewNode(nodeId);
   syncStates();
-  position += 250;
 }
 
 function connection(source, target, transition) {
@@ -149,5 +150,5 @@ if (sessionStorage.getItem("grammarToAutomata")) {
   }
 
   console.log(automata);
-  // window.sessionStorage.clear();
+  window.sessionStorage.removeItem("grammarToAutomata");
 }

@@ -67,7 +67,9 @@ function addNode() {
   const newNode = document.createElement("div");
 
   // Set an ID and class for the new node
-  const nodeId = `node-${Date.now()}`; // Unique ID based on timestamp
+  // Random integer between 1 and 100 to avoid conflicts with duplicate timestamps
+  const randomNumber = Math.floor(Math.random() * 100) + 1;
+  const nodeId = `node-${Date.now()}-${randomNumber}`; // Unique ID based on timestamp and a random value
   newNode.id = nodeId;
   newNode.style.position = "absolute";
   newNode.style.padding = "3rem";
@@ -75,6 +77,9 @@ function addNode() {
   newNode.style.border = "solid 2px red";
   newNode.style.borderRadius = "100%";
   newNode.style.fontSize = "2rem";
+  // random position within 80%
+  newNode.style.left = `${Math.random() * 80}%`;
+  newNode.style.top = `${Math.random() * 80}%`;
 
   // Set the inner text to the current number
   const nodeStateName = document.getElementById("NodeNameInput").value;
