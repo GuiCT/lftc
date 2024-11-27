@@ -175,6 +175,30 @@ if (sessionStorage.getItem("generatedRules")) {
   sessionStorage.removeItem("generatedRules");
 }
 
+if (sessionStorage.getItem("regexToAutomata")) {
+  const rules = JSON.parse(sessionStorage.getItem("regexToAutomata"));
+  for (const rule of rules) {
+    const [lhs, rhs] = rule.split(" -> ");
+    const rhsWithoutSpacesOrLambdas = rhs.split(" ").join("").replace("λ", "");
+    const newRule = renderListComponent();
+    newRule.children[0].value = lhs;
+    newRule.children[2].value = rhsWithoutSpacesOrLambdas;
+    list.appendChild(newRule);
+  }
+  validateAllRules();
+  sessionStorage.removeItem("regexToAutomata");
+  const currentHref = window.location.href;
+  window.sessionStorage.setItem(
+    "grammarToAutomata",
+    JSON.stringify(getGrammar())
+  );
+  console.log(getGrammar());
+  let newPath = currentHref.substring(0, currentHref.lastIndexOf("/"));
+  newPath = newPath.substring(0, newPath.lastIndexOf("/"));
+  newPath += "/atividadeAutomatoFinito/index.html";
+  window.location.href = newPath;
+}
+
 function getGrammar() {
   const parentElement = document.getElementById("list");
   let arrayRegex = [];

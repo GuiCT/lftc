@@ -15,7 +15,6 @@ function generateAutomata() {
 
 if (sessionStorage.getItem("automataToGrammar")) {
   const automata = JSON.parse(sessionStorage.getItem("automataToGrammar"));
-
   automata.transitions.forEach((element) => {
     const listcomponent = renderListComponent();
     listcomponent.children[0].value = `${element.origin}`;
@@ -28,6 +27,5 @@ if (sessionStorage.getItem("automataToGrammar")) {
     list.appendChild(listcomponent);
   });
   console.log(automata);
-
   sessionStorage.removeItem("automataToGrammar");
 }
