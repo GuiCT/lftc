@@ -1,55 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gramática Regular</title>
+    <link rel="stylesheet" href="reset.css" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="tree.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gramática Regular</title>
-  <link rel="stylesheet" href="reset.css" />
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="tree.css" />
-</head>
-
-<body>
-  <header>
-    <h1>Simulador de Gramáticas Regulares</h1>
-    <h2>Guilherme Tomiasi & Willian Murayama</h2>
-    <h3>Apenas gramáticas lineares à direita suportadas</h3>
-    <button onclick="window.location.href='../index.html'" class="button" style="margin: 24px 0; font-size: 12;">
-      Voltar ao início
-    </button>
-  </header>
-  <article>
-    <section class="row">
-      <div class="container">
-        <h1>Entrada:</h1>
-        <input id="user-input" type="text" placeholder="λ" />
+  <body>
+    <header>
+      <h1>Simulador de Gramáticas Regulares</h1>
+      <h2>Guilherme Tomiasi & Willian Murayama</h2>
+      <h3>Apenas gramáticas lineares à direita suportadas</h3>
+    </header>
+    <article>
+      <div style="display: flex; justify-content: space-evenly;flex-direction: column;align-items: center;">
+        <div>
+          <button
+            onclick="window.location.href='../index.html'"
+            class="button"
+            style="margin: 24px 0; font-size: 12"
+          >
+            Voltar ao início
+          </button>
+        </div>
+        <div>
+          <span style="font-weight: bold; font-size: 16pt">Conversão: </span>
+          <button onclick="generateRegex()">Regex</button>
+          <button onclick="generateAutomata()">Automato Finito</button>
+        </div>
       </div>
-      <button onclick="validateInput()" style="background-color: #ADD8E6;">Validar</button>
-    </section>
-    <section id="rules">
-      <div class="row">
-        <h1>Regras:</h1>
-        <button id="add-rule" style="background-color: #D3D3D3;">Adicionar regra</button>
-      </div>
-      <ul id="list">
-        <li class="rule">
-          <input type="text" value="S" readonly />
-          <svg width="30px" height="30px" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M8 6L8 2L10 2L16 8L10 14L8 14L8 10L-1.74845e-07 10L-3.01991e-07 6L8 6Z" fill="#000000" />
-          </svg>
-          <input type="text" placeholder="λ" oninput="validateAllRules()" />
-          <button disabled>Remover regra</button>
-        </li>
-      </ul>
-    </section>
-    <section id="result"></section>
-    <button onclick="window.location.href='../index.html'" class="button" style="margin: 24px 0; font-size: 12;">
-      Voltar ao início
-    </button>
-  </article>
-  <script src="tiny.js"></script>
-  <script src="grammar.js"></script>
-</body>
-
+      <section class="row">
+        <div class="container">
+          <h1>Entrada:</h1>
+          <input id="user-input" type="text" placeholder="λ" />
+        </div>
+        <button onclick="validateInput()" style="background-color: #add8e6">
+          Validar
+        </button>
+      </section>
+      <section id="rules">
+        <div class="row">
+          <h1>Regras:</h1>
+          <button id="add-rule" style="background-color: #d3d3d3">
+            Adicionar regra
+          </button>
+        </div>
+        <ul id="list">
+          <li class="rule">
+            <input type="text" value="S" readonly />
+            <svg
+              width="30px"
+              height="30px"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M8 6L8 2L10 2L16 8L10 14L8 14L8 10L-1.74845e-07 10L-3.01991e-07 6L8 6Z"
+                fill="#000000"
+              />
+            </svg>
+            <input type="text" placeholder="λ" oninput="validateAllRules()" />
+            <button disabled>Remover regra</button>
+          </li>
+        </ul>
+      </section>
+      <section id="result" style="margin-bottom: 100px"></section>
+    </article>
+    <div id="canvasAndResults">
+      <div id="myDiagramDiv"></div>
+      <div id="configurations"></div>
+    </div>
+    <script src="../lib/grammar.js"></script>
+    <script src="../lib/convertions.js"></script>
+    <script src="../lib/jsplumb-browser-ui.umd.js"></script>
+    <script src="grammar.js"></script>
+    <script src="regex.js"></script>
+    <script src="automata.js"></script>
+  </body>
 </html>

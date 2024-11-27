@@ -1,4 +1,8 @@
 /**
+ * @import * from '../lib/convertions';
+ */
+
+/**
  * @type HTMLInputElement
  */
 const inputRegex = document.getElementById("input_regex");
@@ -8,8 +12,8 @@ const inputRegex = document.getElementById("input_regex");
 const inputTest = document.getElementById("input_test");
 
 // Resetting
-inputRegex.value = "^Exemplo$"
-inputTest.value = "Exemplo"
+inputRegex.value = "^Exemplo$";
+inputTest.value = "Exemplo";
 
 let regexIsValid = true;
 let regexObject = new RegExp("");
@@ -24,9 +28,8 @@ function validateRegExpInput() {
   try {
     regexObject = new RegExp(inputRegex.value);
     inputRegex.style.color = "green";
-    // inputRegex.style.backgroundColor = "#90EE90"
     regexIsValid = true;
-  } catch(e) {
+  } catch (e) {
     inputRegex.style.color = "red";
     regexIsValid = false;
   }
@@ -36,10 +39,10 @@ function validateTestInput() {
   if (regexIsValid) {
     if (regexObject.test(inputTest.value)) {
       inputTest.style.color = "green";
-      inputTest.style.backgroundColor = "#90EE90"
+      inputTest.style.backgroundColor = "#90EE90";
     } else {
       inputTest.style.color = "red";
-      inputTest.style.backgroundColor = "#FF7F7F"
+      inputTest.style.backgroundColor = "#FF7F7F";
     }
   }
 }

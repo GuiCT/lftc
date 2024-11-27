@@ -1,44 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Regex</title>
+    <link rel="stylesheet" href="reset.css" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Regex</title>
-  <link rel="stylesheet" href="reset.css">
-  <link rel="stylesheet" href="style.css">
-</head>
+  <body>
+    <header>
+      <h1>Verificador de expressões regulares</h1>
+      <h2>Guilherme Tomiasi & Willian Murayama</h2>
+    </header>
+    <article>
+      <!-- <div style=""> -->
+      <div class="content">
+        <div>
+          <label for="input_regex">Expressão regular</label>
+          <input id="input_regex" />
+        </div>
+        <div>
+          <label for="input_test">Texto verificado</label>
+          <input id="input_test" />
+        </div>
+      </div>
+      <div class="content" style="padding-left: 20px">
+        <span style="font-weight: bold; font-size: 16pt">Conversão</span>
+        <div>
+          <button id="generateGrammar" class="button" onclick="generateGrammar()">Gramatica regular</button>
+          <button id="automaton" class="button" onclick="generateAutomata()">Automato finito</button>
+        </div>
 
-<body>
-  <header>
-    <h1>Verificador de expressões regulares</h1>
-    <h2>Guilherme Tomiasi & Willian Murayama</h2>
-  </header>
-  <article>
-
-      <label for="input_regex">Expressão regular</label>
-      <input id="input_regex"></input>
-
-      <label for="input_test">Texto verificado</label>
-      <input id="input_test"></input>
-    </div>
-    </div>
-    <div class="content">
-        <span style="font-weight: bold; font-size: 16pt;">Conversão</span>
-        <button onclick="window.location.href='../index.html'" class="button" >Gramatica regular</button>
-        <button onclick="window.location.href='../index.html'" class="button"
-        >Automato finito</button>
-        <button onclick="window.location.href='../index.html'" class="button" >Voltar ao
-        início</button>
-    </div>
-  </div>
-  <article>
-
-
-
-
-    <script src="script.js"></script>
-  </article>
-</body>
-
+        <div>
+          <span style="font-weight: bold; font-size: 16pt"
+            >Voltar ao início</span
+          >
+          <div>
+            <button
+              onclick="window.location.href='../index.html'"
+              class="button"
+            >
+              Voltar ao início
+            </button>
+          </div>
+        </div>
+        
+      </div>
+      <div style="font-size: 20pt" id="result"></div>
+      <script src="../lib/convertions.js"></script>
+      <script src="script.js"></script>
+      <script src="grammar.js"></script>
+      <script src="automata.js"></script>
+    </article>
+  </body>
 </html>
