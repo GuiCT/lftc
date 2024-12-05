@@ -20,7 +20,9 @@ const startButton = document.getElementById("startButton");
 const stepButton = document.getElementById("stepButton");
 const modalReference = document.getElementById("inputModal");
 const openModalButton = document.getElementById("openModal");
-const confirmTransitionAddButton = document.getElementById("confirmTransitionAdd");
+const confirmTransitionAddButton = document.getElementById(
+  "confirmTransitionAdd"
+);
 
 /**
  * @type {Map<string, string>}
@@ -52,7 +54,7 @@ function syncStates() {
 }
 
 const letterValidationRegex = /^[a-zA-Zλ]$/;
-let automataDefinition = null;
+let turingMachine = null;
 let configurations = [];
 
 let number = 0;
@@ -138,7 +140,7 @@ instance.bind("connection", function (info) {
   const target = info.target;
   confirmTransitionAddButton.onclick = () => {
     instance.deleteConnection(connection);
-    const readSymbol  = document.getElementById("inputReadSymbol").value;
+    const readSymbol = document.getElementById("inputReadSymbol").value;
     const writeSymbol = document.getElementById("inputWriteSymbol").value;
     const direction = document.getElementById("inputSelectDirection").value;
     instance.connect({
@@ -160,7 +162,7 @@ instance.bind("connection", function (info) {
       doNotFireConnectionEvent: true,
     });
     modalReference.style.display = "none";
-  };  
+  };
 });
 
 function setConfigurations(newValue) {
@@ -222,51 +224,55 @@ function startReading() {
     return;
   }
 
-  automataDefinition = new TuringMachine();
+  turingMachine = new TuringMachine();
   const states = Array.from(mapIdToStateName.values());
-  states.forEach((state) => automataDefinition.addState(state));
+  states.forEach((state) => turingMachine.addState(state));
   const connections = instance.getConnections();
   console.log(connections);
-  
+
   connections.forEach((connection) => {
     const sourceId = connection.sourceId;
     const sourceState = mapIdToStateName.get(sourceId);
     const targetId = connection.targetId;
     const targetState = mapIdToStateName.get(targetId);
     const transitionLetters = getTransitionLettersFromConnection(connection);
-    console.log(transitionLetters);
+    // console.log(transitionLetters.split("; "));
 
     transitionLetters.forEach((transitionLetter) => {
-      
       // console.log(transitionLetter.split("; "));
-      
-      
-      automataDefinition.addAlphabet(transitionLetter.split("; ")[0]);
-      automataDefinition.addTransition(
+      let directionTape;
+      if (transitionLetter.split("; ")[2] == "R") {
+        directionTape = "RIGHT";
+      } else if (transitionLetter.split("; ")[2] == "L") {
+        directionTape = "LEFT";
+      } else if (transitionLetter.split("; ")[2] == "S") {
+        directionTape = "STAY";
+      }
+      turingMachine.addAlphabet(transitionLetter.split("; ")[0]);
+      turingMachine.addTransition(
         sourceState,
         transitionLetter.split("; ")[0],
         targetState,
         transitionLetter.split("; ")[1],
-        transitionLetter.split("; ")[2]
+        directionTape
       );
     });
   });
-  automataDefinition.setInitialState(initialState);
-  finalStates.forEach((state) => automataDefinition.addFinalState(state));
+  turingMachine.setInitialState(initialState);
+  finalStates.forEach((state) => turingMachine.addFinalState(state));
   const initialString = document.getElementById("StringInput").value;
-  setConfigurations(
-    automataDefinition.startReadingConfiguration(initialString)
-  );
+  setConfigurations(turingMachine.startReadingConfiguration(initialString));
   document.getElementById("stepButton").disabled = false;
+  console.log(turingMachine);
 }
 
 function advanceConfigurations() {
-  if (configurations.length === 0 || automataDefinition === null) {
+  if (configurations.length === 0 || turingMachine === null) {
     alert("Nenhuma configuração para avançar.");
     return;
   }
   setConfigurations(
-    automataDefinition.advanceMultipleConfigurations(configurations)
+    turingMachine.advanceMultipleConfigurations(configurations)
   );
 }
 
@@ -288,13 +294,13 @@ function deleteSelectedState() {
 }
 
 // Lidando com estado do modal
-openModalButton.onclick = function() {
+openModalButton.onclick = function () {
   modalReference.style.display = "flex";
-}
+};
 
-window.onclick = function(event) {
+window.onclick = function (event) {
   if (event.target == modalReference) {
     modalReference.style.display = "none";
     confirmTransitionAddButton.onclick = () => {};
   }
-}
+};
