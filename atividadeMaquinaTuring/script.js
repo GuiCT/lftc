@@ -151,7 +151,7 @@ instance.bind("connection", function (info) {
         {
           type: "Label",
           options: {
-            label: `${readSymbol}; ${writeSymbol}, ${direction}`,
+            label: `${readSymbol}; ${writeSymbol}; ${direction}`,
             id: `label-${Date.now()}`,
             cssClass: "customLabel",
           },
@@ -194,6 +194,16 @@ function setConfigurations(newValue) {
     document.getElementById("stepButton").disabled = true;
   }
 }
+function getTransitionLettersFromConnection(connection) {
+  for (const v of Object.values(connection.overlays)) {
+    if (v.type === "Label") {
+      return v
+        .getLabel()
+        .split("\n")
+        .map((letter) => (letter === "λ" ? "" : letter));
+    }
+  }
+}
 
 function startReading() {
   const initialStateId = document.getElementById("initStateSelect").value;
@@ -212,22 +222,32 @@ function startReading() {
     return;
   }
 
-  automataDefinition = new AutomataDefinition();
+  automataDefinition = new TuringMachine();
   const states = Array.from(mapIdToStateName.values());
   states.forEach((state) => automataDefinition.addState(state));
   const connections = instance.getConnections();
+  console.log(connections);
+  
   connections.forEach((connection) => {
     const sourceId = connection.sourceId;
     const sourceState = mapIdToStateName.get(sourceId);
     const targetId = connection.targetId;
     const targetState = mapIdToStateName.get(targetId);
     const transitionLetters = getTransitionLettersFromConnection(connection);
+    console.log(transitionLetters);
+
     transitionLetters.forEach((transitionLetter) => {
-      automataDefinition.addAlphabet(transitionLetter);
+      
+      // console.log(transitionLetter.split("; "));
+      
+      
+      automataDefinition.addAlphabet(transitionLetter.split("; ")[0]);
       automataDefinition.addTransition(
         sourceState,
-        transitionLetter,
-        targetState
+        transitionLetter.split("; ")[0],
+        targetState,
+        transitionLetter.split("; ")[1],
+        transitionLetter.split("; ")[2]
       );
     });
   });
