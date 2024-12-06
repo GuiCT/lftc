@@ -146,7 +146,6 @@ instance.bind("connection", function (info) {
   instance.deleteConnection(connection);
   const connections = instance.getConnections({ source, target });
   if (connections.length === 1) {
-    debugger;
     const connection = connections[0];
     addLetterToConnection(connection, transitionLetter);
   } else {
@@ -180,14 +179,12 @@ function setConfigurations(newValue) {
   // map configurations through history
   configurations.forEach((config, index) => {
     const p = document.createElement("p");
-    let text = `Configuração ${index + 1}: ${
-      mapEnglishStatusToPortuguese[config.currentStatus]
-    }`;
+    let text = `Configuração ${index + 1}: ${mapEnglishStatusToPortuguese[config.currentStatus]
+      }`;
     let currentInput = initialString;
     config.history.forEach((transition, index) => {
-      text += `\n[${currentInput}] ${transition.origin} --(${
-        transition.symbol || "λ"
-      })--> ${transition.target}`;
+      text += `\n[${currentInput}] ${transition.origin} --(${transition.symbol || "λ"
+        })--> ${transition.target}`;
       currentInput = currentInput.slice(transition.symbol.length);
       text += ` [${currentInput}]`;
     });
@@ -300,7 +297,7 @@ function deleteSelectedState() {
 
 function automataToRegex() {
   const currentHref = window.location.href;
-  window.sessionStorage.setItem("automataToRegex",null);
+  window.sessionStorage.setItem("automataToRegex", null);
   let newPath = currentHref.substring(0, currentHref.lastIndexOf("/"));
   newPath = newPath.substring(0, newPath.lastIndexOf("/"));
   newPath += "/atividadeRegex/index.html";

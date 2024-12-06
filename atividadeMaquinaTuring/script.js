@@ -1,5 +1,5 @@
-/** @import { AutomataDefinition } from '../lib/automata.js' */
-/** @import { * } from '../lib/convertions.js' */
+/** @import { TuringMachine } from "../lib/turing.js" */
+
 jsPlumbContainer = document.getElementById("myDiagramDiv");
 console.log(jsPlumb.version); // Logs the jsPlumb version
 
@@ -13,13 +13,15 @@ const instance = jsPlumb.newInstance({
 const selectInitialStateElement = document.getElementById("initStateSelect");
 const finalStatesElement = document.getElementById("finalStatesSelect");
 const deleteStateElement = document.getElementById("deleteStateSelect");
-const automataReadingSettingsDiv = document.getElementById(
-  "automataReadingSettingsDiv"
+const turingReadingSettingsDiv = document.getElementById(
+  "turingReadingSettingsDiv"
 );
 const startButton = document.getElementById("startButton");
 const stepButton = document.getElementById("stepButton");
 const modalReference = document.getElementById("inputModal");
-const openModalButton = document.getElementById("openModal");
+const inputReadSymbol = document.getElementById("inputReadSymbol");
+const inputWriteSymbol = document.getElementById("inputWriteSymbol");
+const inputSelectDirection = document.getElementById("inputSelectDirection");
 const confirmTransitionAddButton = document.getElementById(
   "confirmTransitionAdd"
 );
@@ -45,15 +47,18 @@ function syncStates() {
   const isEmpty = mapIdToStateName.size === 0;
 
   if (isEmpty) {
-    automataReadingSettingsDiv.style.display = "none";
+    turingReadingSettingsDiv.style.display = "none";
     startButton.disabled = true;
   } else {
-    automataReadingSettingsDiv.style.display = "flex";
+    turingReadingSettingsDiv.style.display = "flex";
     startButton.disabled = false;
   }
 }
 
 const letterValidationRegex = /^[a-zA-Zλ]$/;
+/**
+ * @type {TuringMachine | null}
+ */
 let turingMachine = null;
 let configurations = [];
 
@@ -64,6 +69,12 @@ const mapEnglishStatusToPortuguese = {
   READING: "Em leitura",
   ACCEPTED: "Aceita",
   REJECTED: "Rejeitada",
+};
+
+const mapDirectionSymbolToEnum = {
+  "R": "RIGHT",
+  "L": "LEFT",
+  "S": "STAY",
 };
 
 // Function to add a new node dynamically
@@ -114,7 +125,7 @@ function addNewNode(elementId) {
     return;
   }
 
-  for (anchor of ["Left", "Right"]) {
+  for (anchor of ["Left", "Right", "Top", "Bottom"]) {
     instance.addEndpoint(node, {
       target: true,
       source: true,
@@ -133,16 +144,68 @@ function addNewNode(elementId) {
   }
 }
 
+function formatTransition(read, write, direction) {
+  return `${read}; ${write} | ${direction}`;
+}
+
+/**
+ * @param {string} formatted
+ * @returns {[string, string, string]}
+ */
+function transitionFromFormat(formatted) {
+  const [read, tail] = formatted.split("; ");
+  const [write, direction] = tail.split(" | ");
+  return [read, write, direction];
+}
+
+function addTransitionToLabel(connection, read, write, direction) {
+  const formatted = formatTransition(read, write, direction);
+  const overlays = connection.getOverlays();
+  for (const v of Object.values(overlays)) {
+    if (v.type === "Label") {
+      const currentLabel = v.getLabel();
+      v.setLabel(`${currentLabel}\n${formatted}`);
+    }
+  }
+}
+
+/**
+ * @param {unknown} connection
+ * @returns {Array<[string, string, string]>}
+ */
+function getTransitionsFromLabel(connection) {
+  for (const v of Object.values(connection.overlays)) {
+    if (v.type === "Label") {
+      return v
+        .getLabel()
+        .split("\n")
+        .map((formatted) => transitionFromFormat(formatted));
+    }
+  }
+}
+
 instance.bind("connection", function (info) {
   modalReference.style.display = "flex";
+  inputReadSymbol.value = "";
+  inputWriteSymbol.value = "";
+  inputSelectDirection.value = "L";
   const connection = info.connection;
   const source = info.source;
   const target = info.target;
+  instance.deleteConnection(connection);
+  const connections = instance.getConnections({ source, target });
   confirmTransitionAddButton.onclick = () => {
-    instance.deleteConnection(connection);
-    const readSymbol = document.getElementById("inputReadSymbol").value;
-    const writeSymbol = document.getElementById("inputWriteSymbol").value;
-    const direction = document.getElementById("inputSelectDirection").value;
+    const readSymbol = inputReadSymbol.value || "λ";
+    const writeSymbol = inputWriteSymbol.value || "λ";
+    const direction = inputSelectDirection.value;
+
+    if (connections.length === 1) {
+      const connection = connections[0];
+      addTransitionToLabel(connection, readSymbol, writeSymbol, direction);
+      modalReference.style.display = "none";
+      return;
+    }
+
     instance.connect({
       source,
       target,
@@ -153,7 +216,7 @@ instance.bind("connection", function (info) {
         {
           type: "Label",
           options: {
-            label: `${readSymbol}; ${writeSymbol}; ${direction}`,
+            label: formatTransition(readSymbol, writeSymbol, direction),
             id: `label-${Date.now()}`,
             cssClass: "customLabel",
           },
@@ -165,8 +228,21 @@ instance.bind("connection", function (info) {
   };
 });
 
+/**
+ * @param {Array<string>} tape
+ * @param {number} position
+ */
+function formatTape(tape, position) {
+  const before = tape.slice(0, position);
+  const at = tape[position] || "□";
+  const after = tape.splice(position + 1);
+  return `${before.join("")}[${at}]${after.join("")}`;
+}
+
+/**
+ * @param {Array<TuringConfiguration>} newValue
+ */
 function setConfigurations(newValue) {
-  const initialString = document.getElementById("StringInput").value;
   configurations = newValue;
   document.getElementById("stepButton").disabled = newValue.length === 0;
   // reset html in configurations div
@@ -174,18 +250,11 @@ function setConfigurations(newValue) {
   // map configurations through history
   configurations.forEach((config, index) => {
     const p = document.createElement("p");
-    let text = `Configuração ${index + 1}: ${
-      mapEnglishStatusToPortuguese[config.currentStatus]
-    }`;
-    let currentInput = initialString;
-    config.history.forEach((transition, index) => {
-      text += `\n[${currentInput}] ${transition.origin} --(${
-        transition.symbol || "λ"
-      })--> ${transition.target}`;
-      currentInput = currentInput.slice(transition.symbol.length);
-      text += ` [${currentInput}]`;
+    let text = `Configuração ${index + 1}: ${mapEnglishStatusToPortuguese[config.currentStatus]}\nFita: ${formatTape([...config.tape], config.headPosition)}`;
+    config.history.forEach((transition) => {
+      text += `\n${transition.origin} --(${transition.symbol || "λ"
+        })--> ${transition.target}`;
     });
-    text += `\n${config.currentState}`;
     p.innerText = text;
     document.getElementById("configurations").appendChild(p);
   });
@@ -194,17 +263,6 @@ function setConfigurations(newValue) {
   );
   if (noReadingConfigurations) {
     document.getElementById("stepButton").disabled = true;
-  }
-}
-
-function getTransitionLettersFromConnection(connection) {
-  for (const v of Object.values(connection.overlays)) {
-    if (v.type === "Label") {
-      return v
-        .getLabel()
-        .split("\n")
-        .map((letter) => (letter === "λ" ? "" : letter));
-    }
   }
 }
 
@@ -236,32 +294,21 @@ function startReading() {
     const sourceState = mapIdToStateName.get(sourceId);
     const targetId = connection.targetId;
     const targetState = mapIdToStateName.get(targetId);
-    const transitionLetters = getTransitionLettersFromConnection(connection);
-    // console.log(transitionLetters.split("; "));
+    const transitionSymbols = getTransitionsFromLabel(connection);
 
-    transitionLetters.forEach((transitionLetter) => {
-      // console.log(transitionLetter.split("; "));
-      let directionTape;
-      if (transitionLetter.split("; ")[2] == "R") {
-        directionTape = "RIGHT";
-      } else if (transitionLetter.split("; ")[2] == "L") {
-        directionTape = "LEFT";
-      } else if (transitionLetter.split("; ")[2] == "S") {
-        directionTape = "STAY";
-      }
-      turingMachine.addAlphabet(transitionLetter.split("; ")[0]);
-      turingMachine.addAlphabet(transitionLetter.split("; ")[1]);
+    transitionSymbols.forEach(([read, write, direction]) => {
+      const directionTape = mapDirectionSymbolToEnum[direction];
+      turingMachine.addAlphabet(read);
+      turingMachine.addAlphabet(write);
       turingMachine.addTransition(
         sourceState,
-        transitionLetter.split("; ")[0],
+        read,
         targetState,
-        transitionLetter.split("; ")[1],
+        write,
         directionTape
       );
     });
   });
-  const turingTape = document.getElementById("turingTape")
-  turingTape.innerText = document.getElementById("StringInput").value
   turingMachine.setInitialState(initialState);
   finalStates.forEach((state) => turingMachine.addFinalState(state));
   const initialString = document.getElementById("StringInput").value;
@@ -275,21 +322,10 @@ function advanceConfigurations() {
     alert("Nenhuma configuração para avançar.");
     return;
   }
-  let configuratios_advance = turingMachine.advanceMultipleConfigurations(configurations)
+  let configurationsAdvance = turingMachine.advanceMultipleConfigurations(configurations)
   setConfigurations(
-    configuratios_advance
+    configurationsAdvance
   )
-  const turingTape = document.getElementById("turingTape")
-  // turingTape.innerText = configuratios_advance[0].tape
-  // console.log(configuratios_advance[0].tape);]
-  turingTape.innerHTML = "";
-  configuratios_advance[0].tape.forEach((letter) => {
-    const span = document.createElement("span");
-    span.innerText=letter
-    // span.innerText = letter || " "; // Use a space for empty values
-    // span.style.padding = "0 5px"; // Optional: add spacing between letters
-    turingTape.appendChild(span);
-  });
 }
 
 function deleteSelectedState() {
@@ -310,13 +346,9 @@ function deleteSelectedState() {
 }
 
 // Lidando com estado do modal
-openModalButton.onclick = function () {
-  modalReference.style.display = "flex";
-};
-
 window.onclick = function (event) {
   if (event.target == modalReference) {
     modalReference.style.display = "none";
-    confirmTransitionAddButton.onclick = () => {};
+    confirmTransitionAddButton.onclick = () => { };
   }
 };

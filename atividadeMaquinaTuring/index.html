@@ -1,82 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="reset.css" />
-    <link rel="stylesheet" href="style.css" />
-    <title>Máquina de Turing</title>
-  </head>
 
-  <body>
-    <header>
-      <h1>Simulador de Máquina de Turing</h1>
-      <h2>Guilherme Tomiasi & Willian Murayama</h2>
-    </header>
-    <div>
-      <label for="">Fita de entrada: </label>
-      <input type="text" id="StringInput" />
-      <button id="startButton" onclick="startReading()" disabled>
-        Iniciar leitura
-      </button>
-      <button id="stepButton" onclick="advanceConfigurations()" disabled>
-        Avançar
-      </button>
-    </div>
-    <div>
-      <div>
-        <label for="">Nome nó:</label>
-        <input type="text" id="NodeNameInput" placeholder="" />
-        <button onclick="addNode()">Adicionar estado</button>
-      </div>
-    </div>
-    <label for="">Fita da máquina: </label>
-  <div style="font-size: 20pt;" id="turingTape"></div>
-    <div id="automataReadingSettingsDiv" style="display: none">
-      <div id="initialStateDiv">
-        <label for="initialState">Estado inicial: </label>
-        <select name="initialState" id="initStateSelect"></select>
-      </div>
-      <div id="finalStatesDiv">
-        <label for="finalStates">Estados finais: </label>
-        <select name="finalStates" id="finalStatesSelect" multiple></select>
-      </div>
-      <div id="deleteStateDiv">
-        <label for="deleteState">Deletar estado</label>
-        <select name="deleteState" id="deleteStateSelect"></select>
-        <button onclick="deleteSelectedState()">Deletar</button>
-      </div>
-    </div>
-    <div id="canvasAndResults">
-      <div id="myDiagramDiv"></div>
-      <div id="configurations"></div>
-    </div>
-    <div>
-      <div>
-        <button onclick="window.location.href='../index.html'">
-          Voltar ao início
-        </button>
-      </div>
-    </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="reset.css" />
+  <link rel="stylesheet" href="style.css" />
+  <title>Máquina de Turing</title>
+</head>
 
-    <div id="inputModal" class="modal">
-      <div class="modal-content">
-        <label for="inputReadSymbol">Lido</label>
-        <input type="text" id="inputReadSymbol"></input>
-        <label for="inputWriteSymbol">Escrito</label>
-        <input type="text" id="inputWriteSymbol"></input>
-        <label for="inputSelectDirection">Direção</label>
-        <select id="inputSelectDirection" name="direcao" id="inputDirection">
-          <option value="L" id="directionLeft">Esquerda</option>
-          <option value="S" id="directionStale">Parado</option>
-          <option value="R" id="directionRight">Direita</option>
-        </select>
-        <button id="confirmTransitionAdd">Confirmar</button>
-      </div>
+<body>
+  <header>
+    <h1>Simulador de Máquina de Turing</h1>
+    <h2>Guilherme Tomiasi & Willian Murayama</h2>
+  </header>
+  <div>
+    <label for="">Fita de entrada: </label>
+    <input type="text" id="StringInput" />
+    <button id="startButton" onclick="startReading()" disabled>
+      Iniciar leitura
+    </button>
+    <button id="stepButton" onclick="advanceConfigurations()" disabled>
+      Avançar
+    </button>
+  </div>
+  <div>
+    <div>
+      <label for="">Nome nó:</label>
+      <input type="text" id="NodeNameInput" placeholder="" />
+      <button onclick="addNode()">Adicionar estado</button>
     </div>
-    <script src="../lib/jsplumb-browser-ui.umd.js"></script>
-    <script src="../lib/convertions.js"></script>
-    <script src="script.js"></script>
-    <script src="../lib/turing.js"></script>
-  </body>
+  </div>
+  <div id="configurations"></div>
+  <div id="turingReadingSettingsDiv" style="display: none">
+    <div id="initialStateDiv">
+      <label for="initialState">Estado inicial: </label>
+      <select name="initialState" id="initStateSelect"></select>
+    </div>
+    <div id="finalStatesDiv">
+      <label for="finalStates">Estados finais: </label>
+      <select name="finalStates" id="finalStatesSelect" multiple></select>
+    </div>
+    <div id="deleteStateDiv">
+      <label for="deleteState">Deletar estado</label>
+      <select name="deleteState" id="deleteStateSelect"></select>
+      <button onclick="deleteSelectedState()">Deletar</button>
+    </div>
+  </div>
+  <div id="myDiagramDiv"></div>
+  <div>
+    <div>
+      <button onclick="window.location.href='../index.html'">
+        Voltar ao início
+      </button>
+    </div>
+  </div>
+
+  <div id="inputModal" class="modal">
+    <div class="modal-content">
+      <label for="inputReadSymbol">Lido</label>
+      <input type="text" id="inputReadSymbol"></input>
+      <label for="inputWriteSymbol">Escrito</label>
+      <input type="text" id="inputWriteSymbol"></input>
+      <label for="inputSelectDirection">Direção</label>
+      <select id="inputSelectDirection" name="direcao" id="inputDirection">
+        <option value="L" id="directionLeft">Esquerda</option>
+        <option value="S" id="directionStale">Parado</option>
+        <option value="R" id="directionRight">Direita</option>
+      </select>
+      <button id="confirmTransitionAdd">Confirmar</button>
+    </div>
+  </div>
+  <script src="../lib/jsplumb-browser-ui.umd.js"></script>
+  <script src="../lib/convertions.js"></script>
+  <script src="script.js"></script>
+  <script src="../lib/turing.js"></script>
+</body>
+
 </html>
