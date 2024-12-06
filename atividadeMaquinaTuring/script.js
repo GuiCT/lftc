@@ -196,6 +196,7 @@ function setConfigurations(newValue) {
     document.getElementById("stepButton").disabled = true;
   }
 }
+
 function getTransitionLettersFromConnection(connection) {
   for (const v of Object.values(connection.overlays)) {
     if (v.type === "Label") {
@@ -249,6 +250,7 @@ function startReading() {
         directionTape = "STAY";
       }
       turingMachine.addAlphabet(transitionLetter.split("; ")[0]);
+      turingMachine.addAlphabet(transitionLetter.split("; ")[1]);
       turingMachine.addTransition(
         sourceState,
         transitionLetter.split("; ")[0],
@@ -258,6 +260,8 @@ function startReading() {
       );
     });
   });
+  const turingTape = document.getElementById("turingTape")
+  turingTape.innerText = document.getElementById("StringInput").value
   turingMachine.setInitialState(initialState);
   finalStates.forEach((state) => turingMachine.addFinalState(state));
   const initialString = document.getElementById("StringInput").value;
@@ -271,9 +275,21 @@ function advanceConfigurations() {
     alert("Nenhuma configuração para avançar.");
     return;
   }
+  let configuratios_advance = turingMachine.advanceMultipleConfigurations(configurations)
   setConfigurations(
-    turingMachine.advanceMultipleConfigurations(configurations)
-  );
+    configuratios_advance
+  )
+  const turingTape = document.getElementById("turingTape")
+  // turingTape.innerText = configuratios_advance[0].tape
+  // console.log(configuratios_advance[0].tape);]
+  turingTape.innerHTML = "";
+  configuratios_advance[0].tape.forEach((letter) => {
+    const span = document.createElement("span");
+    span.innerText=letter
+    // span.innerText = letter || " "; // Use a space for empty values
+    // span.style.padding = "0 5px"; // Optional: add spacing between letters
+    turingTape.appendChild(span);
+  });
 }
 
 function deleteSelectedState() {
